@@ -1,6 +1,10 @@
 package com.management.student.studentresult.service;
 
+
+import com.management.student.studentresult.dao.User;
+import com.management.student.studentresult.repository.UserRepository;
 import com.management.student.studentresult.vo.UserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -9,8 +13,15 @@ import java.util.Date;
 
 @Service
 public class UserService {
+    @Autowired
+    private UserRepository repository;
 
-    public UserDetails getUserDeatilsByRoll(String rollNumber) throws ParseException {
+    public User saveUser(User user){
+        repository.save(user);
+        return user;
+    }
+
+    public UserDetails getUserDetailsByRoll(String rollNumber) throws ParseException {
         //This method will fetch the details based on roll
         //for now sample dummy implementation has been provided
         UserDetails userDetails = new UserDetails();

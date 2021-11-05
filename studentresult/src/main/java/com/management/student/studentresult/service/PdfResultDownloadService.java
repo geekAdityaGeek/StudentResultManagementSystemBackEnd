@@ -27,7 +27,7 @@ public class PdfResultDownloadService{
     private ResultPdfBuilder pdfBuilder;
 
     public void exportFile(HttpServletResponse response, QueryVO queryVO) throws IOException, ParseException {
-        UserDetails userDetails = userService.getUserDeatilsByRoll(queryVO.getRollNumber());
+        UserDetails userDetails = userService.getUserDetailsByRoll(queryVO.getRollNumber());
         List<MarksVO> marksList = marksService.getMarksDetailsWithoutPagenation(queryVO);
         PdfWriter writer = new PdfWriter(response.getOutputStream());
         pdfBuilder.createNewDocument(writer)
