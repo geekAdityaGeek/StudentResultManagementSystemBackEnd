@@ -3,16 +3,17 @@ package com.management.student.studentresult.dao;
 import javax.persistence.*;
 import java.util.Date;
 
+
 @Entity
-@Table(name = "Auth")
-public class Auth {
+@Table(name = "Action")
+
+public class Action {
 
     @Id
     @GeneratedValue
-    @Column(name = "auth_id")
-    private int authId;
-    private String email;
-    private String password;
+    @Column(name = "act_id")
+    private int actId;
+    private String name;
     private String status;
     @Column(name = "created_by")
     private String createdBy;
@@ -33,37 +34,28 @@ public class Auth {
         this.modifiedAt = new Date();
     }
 
-    public Auth(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public Action(String name) {
+        this.name = name;
         this.status = "ACTIVE";
     }
 
-    public Auth() {
+    public Action() {
     }
 
-    public int getAuthId() {
-        return authId;
+    public int getActId() {
+        return actId;
     }
 
-    public void setAuthId(int authId) {
-        this.authId = authId;
+    public void setActId(int actId) {
+        this.actId = actId;
     }
 
-    public String getEmail() {
-        return email;
+    public String getName() {
+        return name;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getStatus() {

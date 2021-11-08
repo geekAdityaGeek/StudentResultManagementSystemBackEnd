@@ -1,18 +1,27 @@
 package com.management.student.studentresult.dao;
 
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Auth")
-public class Auth {
+@Table(name = "Objection")
+public class Objection {
 
     @Id
     @GeneratedValue
-    @Column(name = "auth_id")
-    private int authId;
-    private String email;
-    private String password;
+    @Column(name = "obj_id")
+    private int objId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+    @OneToOne
+    @JoinColumn(name = "mrk_id")
+    private Marks marks;
+    private String comment;
+    @ManyToOne
+    @JoinColumn(name = "resolver_id")
+    private User resolverId;
     private String status;
     @Column(name = "created_by")
     private String createdBy;
@@ -33,37 +42,52 @@ public class Auth {
         this.modifiedAt = new Date();
     }
 
-    public Auth(String email, String password) {
-        this.email = email;
-        this.password = password;
-        this.status = "ACTIVE";
+    public Objection(User user, Marks marks) {
+        this.user = user;
+        this.marks = marks;
     }
 
-    public Auth() {
+    public Objection() {
     }
 
-    public int getAuthId() {
-        return authId;
+    public int getObjId() {
+        return objId;
     }
 
-    public void setAuthId(int authId) {
-        this.authId = authId;
+    public void setObjId(int objId) {
+        this.objId = objId;
     }
 
-    public String getEmail() {
-        return email;
+    public User getUser() {
+        return user;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getPassword() {
-        return password;
+    public Marks getMarks() {
+        return marks;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setMarks(Marks marks) {
+        this.marks = marks;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public User getResolverId() {
+        return resolverId;
+    }
+
+    public void setResolverId(User resolverId) {
+        this.resolverId = resolverId;
     }
 
     public String getStatus() {

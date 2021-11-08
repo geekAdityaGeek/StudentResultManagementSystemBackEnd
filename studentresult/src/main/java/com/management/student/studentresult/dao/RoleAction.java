@@ -4,15 +4,21 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Auth")
-public class Auth {
+@Table(name = "Role_Action")
+
+public class RoleAction {
 
     @Id
     @GeneratedValue
-    @Column(name = "auth_id")
-    private int authId;
-    private String email;
-    private String password;
+    @Column(name = "rlac_id")
+    private int rlacId;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+    @ManyToOne
+    @JoinColumn(name = "act_id")
+    private Action action;
+    private String access;
     private String status;
     @Column(name = "created_by")
     private String createdBy;
@@ -33,37 +39,46 @@ public class Auth {
         this.modifiedAt = new Date();
     }
 
-    public Auth(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public RoleAction(Role role, Action action, String access) {
+        this.role = role;
+        this.action = action;
+        this.access = access;
         this.status = "ACTIVE";
     }
 
-    public Auth() {
+    public RoleAction() {
     }
 
-    public int getAuthId() {
-        return authId;
+    public int getRlacId() {
+        return rlacId;
     }
 
-    public void setAuthId(int authId) {
-        this.authId = authId;
+    public void setRlacId(int rlacId) {
+        this.rlacId = rlacId;
     }
 
-    public String getEmail() {
-        return email;
+    public Role getRole() {
+        return role;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
-    public String getPassword() {
-        return password;
+    public Action getAction() {
+        return action;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public String getAccess() {
+        return access;
+    }
+
+    public void setAccess(String access) {
+        this.access = access;
     }
 
     public String getStatus() {

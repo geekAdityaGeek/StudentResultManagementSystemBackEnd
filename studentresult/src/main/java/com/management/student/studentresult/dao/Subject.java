@@ -4,15 +4,20 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "Auth")
-public class Auth {
+@Table(name = "Subject")
+public class Subject {
 
     @Id
     @GeneratedValue
-    @Column(name = "auth_id")
-    private int authId;
-    private String email;
-    private String password;
+    @Column(name = "sub_id")
+    private int subId;
+    private String name;
+    @Column(name = "sub_code")
+    private String subCode;
+    private int term;
+    private int year;
+    @Column(name = "tot_score")
+    private int totScore;
     private String status;
     @Column(name = "created_by")
     private String createdBy;
@@ -33,37 +38,64 @@ public class Auth {
         this.modifiedAt = new Date();
     }
 
-    public Auth(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public Subject(String name, String subCode, int term, int year, int totScore) {
+        this.name = name;
+        this.subCode = subCode;
+        this.term = term;
+        this.year = year;
+        this.totScore = totScore;
         this.status = "ACTIVE";
     }
 
-    public Auth() {
+    public Subject() {
     }
 
-    public int getAuthId() {
-        return authId;
+    public int getSubId() {
+        return subId;
     }
 
-    public void setAuthId(int authId) {
-        this.authId = authId;
+    public void setSubId(int subId) {
+        this.subId = subId;
     }
 
-    public String getEmail() {
-        return email;
+    public String getName() {
+        return name;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getPassword() {
-        return password;
+    public String getSubCode() {
+        return subCode;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setSubCode(String subCode) {
+        this.subCode = subCode;
+    }
+
+    public int getTerm() {
+        return term;
+    }
+
+    public void setTerm(int term) {
+        this.term = term;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getTotScore() {
+        return totScore;
+    }
+
+    public void setTotScore(int totScore) {
+        this.totScore = totScore;
     }
 
     public String getStatus() {

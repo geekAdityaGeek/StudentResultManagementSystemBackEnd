@@ -1,16 +1,7 @@
 package com.management.student.studentresult.vo;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.util.Date;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserDetails {
 
     private String name;
@@ -19,6 +10,84 @@ public class UserDetails {
     private String address;
     private String phone;
     private String email;
+    private String password;
+    private int roleId;
 
+    public UserDetails() {
+    }
 
+    public UserDetails(String name, String rollNumber, Date dob, String address, String phone, String email, String password, int roleId) {
+        this.name = name;
+        this.rollNumber = rollNumber;
+        this.dob = dob;
+        this.address = address;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        this.roleId = roleId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public void setRollNumber(String rollNumber) {
+        this.rollNumber = rollNumber;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
 }
