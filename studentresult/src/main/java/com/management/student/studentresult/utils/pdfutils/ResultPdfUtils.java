@@ -20,6 +20,7 @@ public class ResultPdfUtils {
         basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_NAME, userDetails.getName());
         basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_ROLLNUMBER, userDetails.getRollNumber());
         basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_DOB, CommonUtils.formatDate(userDetails.getDob()));
+//        basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_DOB,userDetails.getDob());
         basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_EMAIL, userDetails.getEmail());
         basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_CONTACT, String.valueOf(userDetails.getPhone()));
         basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_ADDRESS, String.valueOf(userDetails.getAddress()));

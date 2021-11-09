@@ -1,25 +1,46 @@
 package com.management.student.studentresult.service;
 
+import com.management.student.studentresult.dao.Auth;
+import com.management.student.studentresult.dao.User;
+import com.management.student.studentresult.repository.AuthRepository;
+import com.management.student.studentresult.repository.UserRepository;
 import com.management.student.studentresult.vo.UserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import java.util.List;
 
 @Service
 public class UserService {
+    @Autowired
+    private UserRepository repository;
 
-    public UserDetails getUserDeatilsByRoll(String rollNumber) throws ParseException {
-        //This method will fetch the details based on roll
-        //for now sample dummy implementation has been provided
+    public User saveUser(User user){
+        return repository.save(user);
+    }
+
+    public List<User> getUsers(){
+        return repository.findAll();
+    }
+
+    public User getUserById(int id){
+        return repository.findById(id).orElse(null);
+    }
+
+    public UserDetails getUserDetailsByRoll(String rollNumber) throws ParseException {
+
+        User user = repository.findByExtId(rollNumber);
+
         UserDetails userDetails = new UserDetails();
-        userDetails.setName("ADITYA SAHA");
-        userDetails.setRollNumber("MT2020093");
-        userDetails.setAddress("C-9/8 Dankuni Housing Estate, Dankuni, HHooghly, WB, Pin 712311");
-        userDetails.setPhone("9007295089");
-        userDetails.setEmail("adi96saha@gmail.com");
-        userDetails.setDob(new SimpleDateFormat("yyyy-MM-dd").parse("1996-10-20"));
+        userDetails.setName(user.getName());
+        userDetails.setRollNumber(user.getExtId());
+        userDetails.setAddress(user.getAddress());
+        userDetails.setPhone(user.getPhone());
+        userDetails.setEmail(user.getAuth().getEmail());
+
         return userDetails;
     }
+
 }
