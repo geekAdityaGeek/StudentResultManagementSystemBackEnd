@@ -6,23 +6,29 @@ import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.service.AuthService;
 import com.management.student.studentresult.service.RoleService;
 import com.management.student.studentresult.service.UserService;
+import com.management.student.studentresult.vo.ResponseMessage;
 import com.management.student.studentresult.vo.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class testController {
+@CrossOrigin("*")
+public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private AuthService authService;
+    
     @Autowired
     private RoleService roleService;
 
@@ -33,21 +39,26 @@ public class testController {
         return roleService.saveRole(newrole);
     }
 
-    @PostMapping("/addUser")
-    public UserDetails addUser(@RequestBody UserDetails userDetails) throws ParseException {
-
-        Auth auth = new Auth(userDetails.getEmail(), userDetails.getPassword());
-        authService.saveAuth(auth);
-        Role role = roleService.getRoleById(userDetails.getRoleId());
-        User user = new User(auth, role, userDetails.getRollNumber(), userDetails.getName(), userDetails.getAddress(), userDetails.getPhone(), userDetails.getDob());
-        userService.saveUser(user);
-
-        return userDetails;
+    @PostMapping("/register")
+    public @ResponseBody ResponseEntity<ResponseMessage> registerUser(@RequestBody UserDetails userDetails){
+    	
+    	return userService.registrationService(userDetails);
     }
 
     @GetMapping("/allRoles")
-    public List<Role> allRoles(){
-        return roleService.getRoles(); 
+    public @ResponseBody ResponseEntity<?> allRoles(){
+    	List<String> roleNamesList= new ArrayList<String>();
+    	try {
+			List<Role> rolesList=roleService.getRoles();
+			for(int i=0;i<rolesList.size();i++)
+				roleNamesList.add(rolesList.get(i).getName());
+		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			return new ResponseEntity<String>("Error in fetching Roles!",HttpStatus.EXPECTATION_FAILED);
+		}
+        return new ResponseEntity<List<String>>(roleNamesList,HttpStatus.OK);
     }
 
 }

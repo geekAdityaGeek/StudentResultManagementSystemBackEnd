@@ -5,10 +5,12 @@ import java.util.Date;
 public class UserDetails {
 
     private String name;
-    private String rollNumber;
+    private String gender;
+    private String contactno;
+    private String role;
+    private String id;
     private Date dob;
     private String address;
-    private String phone;
     private String email;
     private String password;
     private int roleId;
@@ -16,78 +18,96 @@ public class UserDetails {
     public UserDetails() {
     }
 
-    public UserDetails(String name, String rollNumber, Date dob, String address, String phone, String email, String password, int roleId) {
+    public UserDetails(String name, String id, Date dob, String address, String contactno, String email, String password, int roleId) {
         this.name = name;
-        this.rollNumber = rollNumber;
+        this.id = id;
         this.dob = dob;
         this.address = address;
-        this.phone = phone;
+        this.contactno = contactno;
         this.email = email;
         this.password = password;
         this.roleId = roleId;
     }
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getRollNumber() {
-        return rollNumber;
-    }
+	public String getGender() {
+		return gender;
+	}
 
-    public void setRollNumber(String rollNumber) {
-        this.rollNumber = rollNumber;
-    }
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 
-    public Date getDob() {
-        return dob;
-    }
+	public String getContactno() {
+		return contactno;
+	}
 
-    public void setDob(Date dob) {
-        this.dob = dob;
-    }
+	public void setContactno(String contactno) {
+		this.contactno = contactno;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public String getRole() {
+		return role;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public void setRole(String role) {
+		this.role = role;
+	}
 
-    public String getPhone() {
-        return phone;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public Date getDob() {
+		return dob;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setDob(Date dob) {
+		this.dob = dob;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getAddress() {
+		return address;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-    public int getRoleId() {
-        return roleId;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public int getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
+	}
+
+    
 }
