@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.management.student.studentresult.service.ModeratorService;
 
+import java.util.List;
+
 /**
  * @author PRATAP
  *
@@ -38,4 +40,29 @@ public class ModeratorController {
 		}
 		return new ResponseEntity<String>(response, HttpStatus.ACCEPTED);
 	}
+
+	@RequestMapping(value = "/getUniqueTerms", method = RequestMethod.GET)
+	public ResponseEntity<?> uniqueTerms() {
+		List<String> response ;
+		try {
+			response = moderatorService.getTerms();
+		} catch (Exception ex) {
+			String res = ex.getMessage();
+			return new ResponseEntity<String>(res, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<List<String>>(response, HttpStatus.ACCEPTED);
+	}
+
+	@RequestMapping(value = "/getListSubjCodeName", method = RequestMethod.GET)
+	public ResponseEntity<?> subjCodeName() {
+		List<String> response ;
+		try {
+			response = moderatorService.getSubjUseCodeName();
+		} catch (Exception ex) {
+			String res = ex.getMessage();
+			return new ResponseEntity<String>(res, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<List<String>>(response, HttpStatus.ACCEPTED);
+	}
+
 }

@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @SpringBootApplication(exclude={SecurityAutoConfiguration.class})
 public class StudentresultApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(StudentresultApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(StudentresultApplication.class, args);
 
-	}
+    }
 
 }
