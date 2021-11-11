@@ -1,6 +1,8 @@
 package com.management.student.studentresult.dao;
 
 import javax.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -8,11 +10,14 @@ import java.util.Date;
 public class Auth {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "auth_id")
     private int authId;
+    @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String status;
     @Column(name = "created_by")
     private String createdBy;

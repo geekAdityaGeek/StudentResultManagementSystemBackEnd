@@ -24,4 +24,8 @@ public class RoleService {
     public Role getRoleById(int id){
         return repository.findById(id).orElse(null);
     }
+    
+    public Role getRoleByName(String name){
+        return repository.findByName(name).orElse(null);
+    }
 }

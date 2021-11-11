@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class User {
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
 	@OneToOne
 	@JoinColumn(name = "auth_id")
@@ -20,12 +20,17 @@ public class User {
 	@ManyToOne
 	@JoinColumn(name = "role_id")
 	private Role role;
-	@Column(name = "ext_id", unique = true)
+	@Column(name = "ext_id", unique = true, nullable = false)
 	private String extId;
+	@Column(nullable = false)
 	private String name; 
+	@Column(nullable = false)
 	private String address; 
+	@Column(nullable = false, unique=true)
 	private String phone;
+	@Column(nullable = false)
 	private Date dob;
+	@Column(nullable = false)
 	private String status; 
 	@Column(name = "created_by")
 	private String createdBy; 
