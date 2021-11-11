@@ -12,7 +12,7 @@ public class Subject {
     @Column(name = "sub_id")
     private int subId;
     private String name;
-    @Column(name = "sub_code")
+    @Column(name = "sub_code", unique = true)
     private String subCode;
     private int term;
     private int year;

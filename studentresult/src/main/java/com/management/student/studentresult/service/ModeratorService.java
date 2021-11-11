@@ -5,7 +5,9 @@ package com.management.student.studentresult.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -79,4 +81,13 @@ public class ModeratorService {
 		return response;
 	}
 
+	public List<String> getTerms() {
+		List<String> termList = subjectRepository.findDistinctByTerm();
+		return termList;
+	}
+
+	public List<String> getSubjUseCodeName() {
+		List<String> termList = subjectRepository.findSubjectByCodeName();
+		return termList;
+	}
 }
