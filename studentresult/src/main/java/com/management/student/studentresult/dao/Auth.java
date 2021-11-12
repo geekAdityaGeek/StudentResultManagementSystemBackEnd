@@ -30,6 +30,7 @@ public class Auth {
 
     @PrePersist
     void created_at() {
+        this.status = "ACTIVE";
         this.createdAt = this.modifiedAt = new Date();
     }
 

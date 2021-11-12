@@ -37,6 +37,7 @@ public class Marks {
 
     @PrePersist
     void created_at() {
+        this.status = "ACTIVE";
         this.createdAt = this.modifiedAt = new Date();
     }
 
@@ -54,6 +55,12 @@ public class Marks {
         this.term = term;
         this.grade = grade;
         this.status = "ACTIVE";
+    }
+
+    public Marks(User user, int year, int term) {
+        this.user = user;
+        this.year = year;
+        this.term = term;
     }
 
     public Marks() {
@@ -162,4 +169,6 @@ public class Marks {
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
+
+
 }

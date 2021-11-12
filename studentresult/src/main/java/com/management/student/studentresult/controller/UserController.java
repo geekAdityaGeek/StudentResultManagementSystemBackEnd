@@ -6,6 +6,11 @@ import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.service.AuthService;
 import com.management.student.studentresult.service.RoleService;
 import com.management.student.studentresult.service.UserService;
+import com.management.student.studentresult.vo.UserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import com.management.student.studentresult.vo.ResponseMessage;
 import com.management.student.studentresult.vo.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +32,26 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
-    
+    private UserService userService;    
     @Autowired
     private RoleService roleService;
 
+  /**
     @PostMapping("/addRole")
     public Role addRole(@RequestBody Role role){
 
         Role newrole = new Role(role.getName(), role.getCreatedBy(), role.getModifiedBy());
         return roleService.saveRole(newrole);
     }
-
+**/
     @PostMapping("/register")
     public @ResponseBody ResponseEntity<ResponseMessage> registerUser(@RequestBody UserDetails userDetails){
     	
     	return userService.registrationService(userDetails);
     }
 
+  /**
+  //place in RoleActionController.java
     @GetMapping("/allRoles")
     public @ResponseBody ResponseEntity<?> allRoles(){
     	List<String> roleNamesList= new ArrayList<String>();
@@ -60,5 +67,5 @@ public class UserController {
 		}
         return new ResponseEntity<List<String>>(roleNamesList,HttpStatus.OK);
     }
-
+    **/
 }
