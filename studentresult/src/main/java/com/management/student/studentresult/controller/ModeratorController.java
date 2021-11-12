@@ -82,4 +82,16 @@ public class ModeratorController {
 		return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/bulkUpdate", method = RequestMethod.POST)
+	public ResponseEntity<?> marksBulkUpdate(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpdt) {
+		ResponseMessage respMsg = null;
+		try {
+			String response = moderatorService.marksBulkUpdate(fileMarksUpdt);
+			respMsg = new ResponseMessage(response);
+		} catch (Exception ex) {
+			respMsg = new ResponseMessage(ex.getMessage());
+			return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.EXPECTATION_FAILED);
+		}
+		return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.OK);
+	}
 }

@@ -3,6 +3,7 @@
  */
 package com.management.student.studentresult.service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -55,18 +56,18 @@ public class ModeratorService {
 			if (row.getRowNum() == 0)
 				continue;
 			String rollNo = row.getCell(0).getStringCellValue();
-			Double year = row.getCell(2).getNumericCellValue();
-			Double term = row.getCell(1).getNumericCellValue();
+			Double year = row.getCell(1).getNumericCellValue();
+			Double term = row.getCell(2).getNumericCellValue();
 			String subjectCode = row.getCell(3).getStringCellValue();
 			Double totalMarks = row.getCell(4).getNumericCellValue();
 			Double marksObtained = row.getCell(5).getNumericCellValue();
 			String grade = row.getCell(6).getStringCellValue();
 			User student = userRepository.findByExtId(rollNo);
 			Subject subject = subjectRepository.findBySubCode(subjectCode);
-			boolean checkExistence = findExistence(rollNo, subjectCode);
+			boolean checkExistence = findExistence(rollNo, subjectCode, false);
 			if (checkExistence) {
-				Marks mark = new Marks(student, subject, marksObtained, totalMarks.intValue(), term.intValue(),
-						year.intValue(), grade);
+				Marks mark = new Marks(student, subject, marksObtained, totalMarks.intValue(), year.intValue(),
+						term.intValue(), grade);
 				marksRepository.save(mark);
 			}
 		}
@@ -90,7 +91,7 @@ public class ModeratorService {
 
 	public String marksSingleUpload(MarksVO marksVO) throws Exception {
 		// TODO Auto-generated method stub
-		boolean checkExistence = findExistence(marksVO.getRollNo(), marksVO.getSubjectCode());
+		boolean checkExistence = findExistence(marksVO.getRollNo(), marksVO.getSubjectCode(), false);
 		if (checkExistence) {
 			User student = userRepository.findByExtId(marksVO.getRollNo());
 			Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
@@ -102,7 +103,7 @@ public class ModeratorService {
 		return response;
 	}
 
-	private boolean findExistence(String rollNo, String subjectCode) throws Exception {
+	private boolean findExistence(String rollNo, String subjectCode, boolean updateFlag) throws Exception {
 		// TODO Auto-generated method stub
 		User student = userRepository.findByExtId(rollNo);
 		Subject subject = subjectRepository.findBySubCode(subjectCode);
@@ -110,9 +111,52 @@ public class ModeratorService {
 			throw new Exception("Student or Subject not found. Please check and upload.");
 		}
 		Marks checkMarkExist = marksRepository.findByUserAndSubject(student, subject);
-		if (checkMarkExist != null) {
+		if (checkMarkExist != null && !updateFlag) {
 			throw new Exception("Student found with same subject code. Please check and upload");
 		}
 		return true;
+	}
+
+	public String marksBulkUpdate(MultipartFile fileMarksUpdt) throws Exception {
+		// TODO Auto-generated method stub
+		String response = "";
+		XSSFWorkbook workbook = null;
+		InputStream stream = fileMarksUpdt.getInputStream();
+		workbook = new XSSFWorkbook(stream);
+		XSSFSheet sheet = workbook.getSheetAt(0);
+		Iterator<Row> rowItr = sheet.iterator();
+		while (rowItr.hasNext()) {
+			Row row = rowItr.next();
+			if (row.getRowNum() == 0)
+				continue;
+			String rollNo = row.getCell(0).getStringCellValue();
+			Double year = row.getCell(1).getNumericCellValue();
+			Double term = row.getCell(2).getNumericCellValue();
+			String subjectCode = row.getCell(3).getStringCellValue();
+			Double totalMarks = row.getCell(4).getNumericCellValue();
+			Double marksObtained = row.getCell(5).getNumericCellValue();
+			String grade = row.getCell(6).getStringCellValue();
+			boolean checkExistence = findExistence(rollNo, subjectCode, true);
+			if (checkExistence) {
+				User student = userRepository.findByExtId(rollNo);
+				Subject subject = subjectRepository.findBySubCode(subjectCode);
+				Marks mark = marksRepository.findByUserAndSubjectAndTermAndYear(student, subject, term.intValue(),
+						year.intValue());
+				if (mark == null) {
+					if (workbook != null)
+						workbook.close();
+					throw new Exception(
+							"No mark exist for a stuent with the given Roll number, Subject Code, Term and Year. Please check and Udate the file.");
+				}
+				mark.setScore(marksObtained);
+				mark.setTotScore(totalMarks.intValue());
+				mark.setGrade(grade);
+				marksRepository.save(mark);
+			}
+		}
+		if (workbook != null)
+			workbook.close();
+		response = "Bulk Update of Marks Successful";
+		return response;
 	}
 }
