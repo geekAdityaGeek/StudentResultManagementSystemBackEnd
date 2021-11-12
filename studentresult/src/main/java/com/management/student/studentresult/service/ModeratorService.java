@@ -3,9 +3,7 @@
  */
 package com.management.student.studentresult.service;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,6 +22,7 @@ import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.repository.MarksRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
 import com.management.student.studentresult.repository.UserRepository;
+import com.management.student.studentresult.vo.MarksVO;
 
 /**
  * @author PRATAP
@@ -62,16 +61,14 @@ public class ModeratorService {
 			Double totalMarks = row.getCell(4).getNumericCellValue();
 			Double marksObtained = row.getCell(5).getNumericCellValue();
 			String grade = row.getCell(6).getStringCellValue();
-			System.out.println(rollNo + " " + term + " " + year + " " + subjectCode + " " + totalMarks + " "
-					+ marksObtained + " " + grade);
 			User student = userRepository.findByExtId(rollNo);
 			Subject subject = subjectRepository.findBySubCode(subjectCode);
-			if (student == null || subject == null) {
-				throw new Exception("Student or Subject not found. Please check and update the file.");
+			boolean checkExistence = findExistence(rollNo, subjectCode);
+			if (checkExistence) {
+				Marks mark = new Marks(student, subject, marksObtained, totalMarks.intValue(), term.intValue(),
+						year.intValue(), grade);
+				marksRepository.save(mark);
 			}
-			Marks mark = new Marks(student, subject, marksObtained, totalMarks.intValue(), term.intValue(),
-					year.intValue(), grade);
-			marksRepository.save(mark);
 		}
 		response = "Marks successfully uploaded";
 
@@ -89,5 +86,33 @@ public class ModeratorService {
 	public List<String> getSubjUseCodeName() {
 		List<String> termList = subjectRepository.findSubjectByCodeName();
 		return termList;
+	}
+
+	public String marksSingleUpload(MarksVO marksVO) throws Exception {
+		// TODO Auto-generated method stub
+		boolean checkExistence = findExistence(marksVO.getRollNo(), marksVO.getSubjectCode());
+		if (checkExistence) {
+			User student = userRepository.findByExtId(marksVO.getRollNo());
+			Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
+			Marks marks = new Marks(student, subject, marksVO.getMarksObtained(), marksVO.getTotalMarks(),
+					marksVO.getYear(), marksVO.getTerm(), marksVO.getGrade());
+			marksRepository.save(marks);
+		}
+		String response = "Marks Uploaded Successfullly";
+		return response;
+	}
+
+	private boolean findExistence(String rollNo, String subjectCode) throws Exception {
+		// TODO Auto-generated method stub
+		User student = userRepository.findByExtId(rollNo);
+		Subject subject = subjectRepository.findBySubCode(subjectCode);
+		if (student == null || subject == null) {
+			throw new Exception("Student or Subject not found. Please check and upload.");
+		}
+		Marks checkMarkExist = marksRepository.findByUserAndSubject(student, subject);
+		if (checkMarkExist != null) {
+			throw new Exception("Student found with same subject code. Please check and upload");
+		}
+		return true;
 	}
 }
