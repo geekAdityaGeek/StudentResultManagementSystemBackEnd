@@ -11,6 +11,7 @@ public class Auth {
     @GeneratedValue
     @Column(name = "auth_id")
     private int authId;
+    @Column(unique = true)
     private String email;
     private String password;
     private String status;
@@ -25,6 +26,7 @@ public class Auth {
 
     @PrePersist
     void created_at() {
+        this.status = "ACTIVE";
         this.createdAt = this.modifiedAt = new Date();
     }
 

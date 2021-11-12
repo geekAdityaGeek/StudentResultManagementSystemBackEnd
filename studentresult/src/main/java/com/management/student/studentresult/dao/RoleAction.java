@@ -31,6 +31,7 @@ public class RoleAction {
 
     @PrePersist
     void created_at() {
+        this.status = "ACTIVE";
         this.createdAt = this.modifiedAt = new Date();
     }
 

@@ -23,7 +23,8 @@ public class User {
 	@Column(name = "ext_id", unique = true)
 	private String extId;
 	private String name; 
-	private String address; 
+	private String address;
+	@Column(unique = true)
 	private String phone;
 	private Date dob;
 	private String status; 
@@ -39,6 +40,7 @@ public class User {
 	@PrePersist
 	void created_at() {
 		this.createdBy = name;
+		this.status = "ACTIVE";
 		this.createdAt = this.modifiedAt = new Date(); 
 	}
 	
@@ -47,7 +49,7 @@ public class User {
 		this.modifiedAt = new Date(); 
 	}
 
-	public User(Auth auth, Role role, String extId, String name, String address, String phone, Date dob) throws ParseException {
+	public User(Auth auth, Role role, String extId, String name, String address, String phone, Date dob){
 		this.auth = auth;
 		this.role = role;
 		this.extId = extId;
