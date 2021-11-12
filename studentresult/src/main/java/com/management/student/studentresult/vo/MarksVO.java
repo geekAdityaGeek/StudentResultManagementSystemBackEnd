@@ -7,13 +7,13 @@ public class MarksVO {
     private int year;
     private int term;
     private int totalMarks;
-    private int marksObtained;
+    private double marksObtained;
     private String grade;
 
     public MarksVO() {
     }
 
-    public MarksVO(String rollNo, String subjectCode, String subjectName, int year, int term, int totalMarks, int marksObtained, String grade) {
+    public MarksVO(String rollNo, String subjectCode, String subjectName, int year, int term, int totalMarks, double marksObtained, String grade) {
         this.rollNo = rollNo;
         this.subjectCode = subjectCode;
         this.subjectName = subjectName;
@@ -72,11 +72,11 @@ public class MarksVO {
         this.totalMarks = totalMarks;
     }
 
-    public int getMarksObtained() {
+    public double getMarksObtained() {
         return marksObtained;
     }
 
-    public void setMarksObtained(int marksObtained) {
+    public void setMarksObtained(double marksObtained) {
         this.marksObtained = marksObtained;
     }
 
