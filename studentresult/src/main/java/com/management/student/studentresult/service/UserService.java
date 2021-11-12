@@ -1,21 +1,35 @@
 package com.management.student.studentresult.service;
 
 import com.management.student.studentresult.dao.Auth;
+import com.management.student.studentresult.dao.Role;
 import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.repository.AuthRepository;
 import com.management.student.studentresult.repository.UserRepository;
+import com.management.student.studentresult.vo.ResponseMessage;
 import com.management.student.studentresult.vo.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 
 import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 @Service
+@Transactional
 public class UserService {
     @Autowired
     private UserRepository repository;
+    
+    @Autowired
+    private AuthService authService;
+    
+    @Autowired
+    private RoleService roleService;
 
     public User saveUser(User user){
         return repository.save(user);
@@ -29,18 +43,40 @@ public class UserService {
         return repository.findById(id).orElse(null);
     }
 
-    public UserDetails getUserDetailsByRoll(String rollNumber) throws ParseException {
+    public UserDetails getUserDetailsByRoll(String id) throws ParseException {
 
-        User user = repository.findByExtId(rollNumber);
-
+        User user = repository.findByExtId(id);
         UserDetails userDetails = new UserDetails();
         userDetails.setName(user.getName());
-        userDetails.setRollNumber(user.getExtId());
+        userDetails.setId(user.getExtId());
         userDetails.setAddress(user.getAddress());
-        userDetails.setPhone(user.getPhone());
+        userDetails.setContactno(user.getPhone());
         userDetails.setEmail(user.getAuth().getEmail());
 
         return userDetails;
+    }
+    
+    public ResponseEntity<ResponseMessage> registrationService(UserDetails userDetails){
+    	
+    	try {
+			if(authService.getAuthByEmail(userDetails.getEmail()).isPresent())
+				throw new Exception("Email already exists!");
+			if(repository.existsByExtId(userDetails.getId()))
+				throw new Exception("We have another user with same Id!");
+			if(repository.existsByPhone(userDetails.getContactno()))
+				throw new Exception("This contact number is already taken!");
+			Auth auth = new Auth(userDetails.getEmail(), userDetails.getPassword());
+			auth=authService.saveAuth(auth);
+			Role role = roleService.getRoleByName(userDetails.getRole());
+			User user = new User(auth, role, userDetails.getId(), userDetails.getName(), userDetails.getAddress(), userDetails.getContactno(), userDetails.getDob());
+			saveUser(user);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(e.getMessage()));
+		}
+    	String message="Registration Successful!";
+    	return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage(message));
+
     }
 
 }

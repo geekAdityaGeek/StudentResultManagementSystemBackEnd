@@ -19,7 +19,7 @@ public class Marks {
     @ManyToOne
     @JoinColumn(name = "sub_id")
     private Subject subject;
-    private int score;
+    private Double score;
     @Column(name = "tot_score")
     private int totScore;
     private int year;
@@ -46,7 +46,7 @@ public class Marks {
         this.modifiedAt = new Date();
     }
 
-    public Marks(User user, Subject subject, int score, int totScore, int year, int term, String grade) {
+    public Marks(User user, Subject subject, Double score, int totScore, int year, int term, String grade) {
         this.user = user;
         this.subject = subject;
         this.score = score;
@@ -90,11 +90,11 @@ public class Marks {
         this.subject = subject;
     }
 
-    public int getScore() {
+    public Double getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(Double score) {
         this.score = score;
     }
 
