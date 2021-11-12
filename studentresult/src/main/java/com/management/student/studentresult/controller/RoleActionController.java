@@ -39,5 +39,4 @@ public class RoleActionController {
         }
         return new ResponseEntity<List<String>>(roleNamesList,HttpStatus.OK);
     }
-
 }
