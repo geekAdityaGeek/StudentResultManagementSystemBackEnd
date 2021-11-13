@@ -1,6 +1,7 @@
 package com.management.student.studentresult.service;
 
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.utils.pdfutils.PdfDocumentBuilder;
 import com.management.student.studentresult.utils.pdfutils.ResultPdfBuilder;
 import com.management.student.studentresult.vo.MarksVO;
@@ -27,7 +28,7 @@ public class PdfResultDownloadService{
     private ResultPdfBuilder pdfBuilder;
 
     public void exportFile(HttpServletResponse response, QueryVO queryVO) throws IOException, ParseException {
-        UserDetails userDetails = userService.getUserDetailsByRoll(queryVO.getRollNumber());
+        UserDetails userDetails = userService.getUserDetailsByExtId(queryVO.getRollNumber());
         List<MarksVO> marksList = marksService.getMarksDetailsWithoutPagination(queryVO);
         PdfWriter writer = new PdfWriter(response.getOutputStream());
         pdfBuilder.createNewDocument(writer)

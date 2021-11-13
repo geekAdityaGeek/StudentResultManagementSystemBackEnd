@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/moderator")
-@CrossOrigin
+@CrossOrigin("*")
 public class ModeratorController {
 
 	@Autowired

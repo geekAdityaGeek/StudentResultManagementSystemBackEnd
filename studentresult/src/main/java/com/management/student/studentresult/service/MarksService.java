@@ -3,6 +3,7 @@ package com.management.student.studentresult.service;
 import com.management.student.studentresult.dao.Marks;
 import com.management.student.studentresult.dao.Subject;
 import com.management.student.studentresult.dao.User;
+import com.management.student.studentresult.enums.Operation;
 import com.management.student.studentresult.repository.MarksRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
 import com.management.student.studentresult.repository.UserRepository;
@@ -83,30 +84,41 @@ public class MarksService {
     public List<MarksVO> updateMarksQueryResult(List<MarksVO> marksVO) throws ParseException {
         List<MarksVO> marksVOList = new ArrayList<>();
         for (MarksVO marksVO1 : marksVO) {
-            String operationType = marksVO1.getUpdateDeleteStatus();
-            User user = userService.getUserById(Integer.parseInt(marksVO1.getRollNo()));
+            String operationType = marksVO1.getOperation();
+            User user = userService.getUserByExtId(marksVO1.getRollNo());
             Subject subject = subjectRepository.findBySubCode(marksVO1.getSubjectCode());
             Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, marksVO1.getTerm(), marksVO1.getYear());
-            MarksVO temp ;
-            if (operationType.equals("delete")) {
-                mark.setStatus("INACTIVE");
-                mark = repository.save(mark);
-                temp = new MarksVO(marksVO1.getRollNo(), marksVO1.getSubjectCode(), marksVO1.getSubjectName(),
-                        marksVO1.getYear(), marksVO1.getTerm(), mark.getTotScore(), mark.getScore(), mark.getGrade(),
-                        mark.getStatus());
+            if(Operation.DELETE.getName().equals(operationType)) {
+                MarksVO temp = performSoftDelete(mark, marksVO1, subject);
                 marksVOList.add(temp);
-            }
-            else {
-                mark.setScore(marksVO1.getMarksObtained());
-                mark.setGrade(marksVO1.getGrade());
-                mark.setTotScore(marksVO1.getTotalMarks());
-                mark = repository.save(mark);
-                temp = new MarksVO(marksVO1.getRollNo(), marksVO1.getSubjectCode(), marksVO1.getSubjectName(),
-                        marksVO1.getYear(), marksVO1.getTerm(), mark.getTotScore(), mark.getScore(), mark.getGrade(),
-                        mark.getStatus());
+            }else if(Operation.UPDATE.getName().equals(operationType)) {
+                MarksVO temp = performUpdate(mark, marksVO1, subject);
                 marksVOList.add(temp);
             }
         }
         return marksVOList;
     }
+
+    public MarksVO performSoftDelete(Marks mark, MarksVO marksVO, Subject subject){
+        mark.setStatus("INACTIVE");
+        mark = repository.save(mark);
+        MarksVO temp = new MarksVO(marksVO.getRollNo(), subject.getSubCode(), subject.getName(),
+                marksVO.getYear(), marksVO.getTerm(), mark.getTotScore(),
+                mark.getScore(), mark.getGrade(),
+                mark.getStatus());
+        return temp;
+    }
+
+    public MarksVO performUpdate(Marks mark, MarksVO markVO, Subject subject){
+        mark.setScore(markVO.getMarksObtained());
+        mark.setGrade(markVO.getGrade());
+        mark.setTotScore(markVO.getTotalMarks());
+        mark = repository.save(mark);
+        MarksVO temp = new MarksVO(markVO.getRollNo(), subject.getSubCode(), subject.getName(),
+                markVO.getYear(), markVO.getTerm(), mark.getTotScore(), mark.getScore(), mark.getGrade(),
+                mark.getStatus());
+        return temp;
+    }
+
+
 }
