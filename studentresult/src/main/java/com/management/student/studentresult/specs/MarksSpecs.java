@@ -21,16 +21,16 @@ public class MarksSpecs {
                         builder.equal(root.get("year"), year);
     }
 
-    public static Specification<Marks> marksUserEquals(User user){
+    public static Specification<Marks> marksUserEquals(User user, String rollNumber){
         return (root, query, builder) ->
-                user == null ?
+                user == null && rollNumber == null ?
                         builder.conjunction() :
                         builder.equal(root.get("user"), user);
     }
 
-    public static Specification<Marks> marksSubjectEquals(Subject subject){
+    public static Specification<Marks> marksSubjectEquals(Subject subject, String subjectCode){
         return (root, query, builder) ->
-                subject == null ?
+                subject == null && subjectCode == null ?
                         builder.conjunction() :
                         builder.equal(root.get("subject"), subject);
     }

@@ -1,6 +1,7 @@
 package com.management.student.studentresult.vo;
 
 public class MarksVO {
+
 	private String rollNo;
 	private String subjectCode;
 	private String subjectName;
