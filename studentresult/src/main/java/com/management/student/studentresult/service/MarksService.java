@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,9 @@ public class MarksService {
     private UserRepository userRepository;
     @Autowired
     private SubjectRepository subjectRepository;
+
+    @Autowired
+    private UserService userService;
 
     public Marks saveMarks(Marks marks){
         return repository.save(marks);
@@ -73,6 +77,36 @@ public class MarksService {
             marksVOList.add(marksVO);
         }
 
+        return marksVOList;
+    }
+
+    public List<MarksVO> updateMarksQueryResult(List<MarksVO> marksVO) throws ParseException {
+        List<MarksVO> marksVOList = new ArrayList<>();
+        for (MarksVO marksVO1 : marksVO) {
+            String operationType = marksVO1.getUpdateDeleteStatus();
+            User user = userService.getUserById(Integer.parseInt(marksVO1.getRollNo()));
+            Subject subject = subjectRepository.findBySubCode(marksVO1.getSubjectCode());
+            Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, marksVO1.getTerm(), marksVO1.getYear());
+            MarksVO temp ;
+            if (operationType.equals("delete")) {
+                mark.setStatus("INACTIVE");
+                mark = repository.save(mark);
+                temp = new MarksVO(marksVO1.getRollNo(), marksVO1.getSubjectCode(), marksVO1.getSubjectName(),
+                        marksVO1.getYear(), marksVO1.getTerm(), mark.getTotScore(), mark.getScore(), mark.getGrade(),
+                        mark.getStatus());
+                marksVOList.add(temp);
+            }
+            else {
+                mark.setScore(marksVO1.getMarksObtained());
+                mark.setGrade(marksVO1.getGrade());
+                mark.setTotScore(marksVO1.getTotalMarks());
+                mark = repository.save(mark);
+                temp = new MarksVO(marksVO1.getRollNo(), marksVO1.getSubjectCode(), marksVO1.getSubjectName(),
+                        marksVO1.getYear(), marksVO1.getTerm(), mark.getTotScore(), mark.getScore(), mark.getGrade(),
+                        mark.getStatus());
+                marksVOList.add(temp);
+            }
+        }
         return marksVOList;
     }
 }

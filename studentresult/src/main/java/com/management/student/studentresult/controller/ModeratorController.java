@@ -3,15 +3,11 @@
  */
 package com.management.student.studentresult.controller;
 
+import com.management.student.studentresult.service.MarksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.management.student.studentresult.service.ModeratorService;
@@ -31,6 +27,9 @@ public class ModeratorController {
 
 	@Autowired
 	private ModeratorService moderatorService;
+
+	@Autowired
+	private MarksService marksService;
 
 	@RequestMapping(value = "/bulkUpload", method = RequestMethod.POST)
 	public ResponseEntity<?> marksBulkUpload(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpl) {
@@ -93,5 +92,18 @@ public class ModeratorController {
 			return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.EXPECTATION_FAILED);
 		}
 		return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/updateMarks", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> updateMarks(@RequestBody List<MarksVO> marksVO) {
+		List<MarksVO> response ;
+		try {
+			response = marksService.updateMarksQueryResult(marksVO);
+		} catch (Exception ex) {
+			String res = ex.getMessage();
+			return new ResponseEntity<String>(res, HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<List<MarksVO>>(response, HttpStatus.ACCEPTED);
 	}
 }
