@@ -2,6 +2,7 @@ package com.management.student.studentresult.controller;
 
 import com.management.student.studentresult.service.MarksService;
 import com.management.student.studentresult.service.PdfResultDownloadService;
+import com.management.student.studentresult.utils.QueryVOMapper;
 import com.management.student.studentresult.vo.QueryVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +12,7 @@ import javax.management.Query;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -21,8 +23,9 @@ public class DownloadController {
     private PdfResultDownloadService fileDownloadService;
 
     @GetMapping("/result/pdf")
-    public void downloadResultPdf(@RequestBody QueryVO queryVO, HttpServletResponse response) throws IOException, ParseException {
-        fileDownloadService.exportFile(response, queryVO);
+    public void downloadResultPdf(@RequestParam Map<String, String> requestParameters, HttpServletResponse response) throws IOException, ParseException {
+        QueryVO query = QueryVOMapper.mapFromRequestParameter(requestParameters);
+        fileDownloadService.exportFile(response, query);
     }
 
 }
