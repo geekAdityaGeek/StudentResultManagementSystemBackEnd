@@ -68,7 +68,6 @@ public class UserService {
 			Auth auth = new Auth(userDetails.getEmail(), userDetails.getPassword());
 			auth=authService.saveAuth(auth);
 			Role role = roleService.getRoleByName(userDetails.getRole());
-            System.out.println("reached here.......");
 			User user = new User(auth, role, userDetails.getId(), userDetails.getName(), userDetails.getAddress(), userDetails.getContactno(), userDetails.getDob());
 			saveUser(user);
 		} catch (Exception e) {

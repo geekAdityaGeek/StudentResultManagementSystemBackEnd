@@ -22,14 +22,6 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
-  /**
-    @PostMapping("/addRole")
-    public Role addRole(@RequestBody Role role){
-
-        Role newrole = new Role(role.getName(), role.getCreatedBy(), role.getModifiedBy());
-        return roleService.saveRole(newrole);
-    }
-**/
     @PostMapping("/register")
     public @ResponseBody ResponseEntity<ResponseMessage> registerUser(@RequestBody UserDetails userDetails){
     	
