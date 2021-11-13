@@ -30,8 +30,11 @@ public class MarksController {
     }
 
     @GetMapping("/getMarks/pagination")
-    public List<MarksVO> queryMarksPagination(@RequestBody QueryVO query, @RequestParam int page, @RequestParam int items){
-        Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
+    public List<MarksVO> queryMarksPagination(@RequestParam Map<String, String> requestParameters){
+        int page = Integer.parseInt(requestParameters.get("page"));
+        int items = Integer.parseInt(requestParameters.get("items"));
+        QueryVO query = QueryVOMapper.mapFromRequestParameter(requestParameters);
+        Pageable pageable = PageRequest.of(page, items, Sort.by("year").descending().by("term").descending());
         List<MarksVO> marksList = marksService.getMarksDetailsWithPagination(query, pageable);
         return marksList; 
     }
