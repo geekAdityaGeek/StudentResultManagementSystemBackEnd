@@ -28,7 +28,7 @@ public class PdfResultDownloadService{
 
     public void exportFile(HttpServletResponse response, QueryVO queryVO) throws IOException, ParseException {
         UserDetails userDetails = userService.getUserDetailsByRoll(queryVO.getRollNumber());
-        List<MarksVO> marksList = marksService.getMarksDetailsWithoutPagenation(queryVO);
+        List<MarksVO> marksList = marksService.getMarksDetailsWithoutPagination(queryVO);
         PdfWriter writer = new PdfWriter(response.getOutputStream());
         pdfBuilder.createNewDocument(writer)
                 .addHeader("This document is generated from Student Result Management System")

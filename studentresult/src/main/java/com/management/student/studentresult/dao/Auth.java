@@ -10,7 +10,7 @@ import java.util.Date;
 public class Auth {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "auth_id")
     private int authId;
     @Column(nullable = false, unique = true)

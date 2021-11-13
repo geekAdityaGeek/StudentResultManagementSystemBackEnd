@@ -19,7 +19,7 @@ public class Marks {
     @ManyToOne
     @JoinColumn(name = "sub_id")
     private Subject subject;
-    private Double score;
+    private double score;
     @Column(name = "tot_score")
     private int totScore;
     private int year;
