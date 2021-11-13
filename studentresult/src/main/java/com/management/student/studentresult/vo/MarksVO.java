@@ -10,6 +10,7 @@ public class MarksVO {
 	private int totalMarks;
 	private Double marksObtained;
 	private String grade;
+	private String updateDeleteStatus;
 
 	public MarksVO() {
 	}
@@ -24,6 +25,19 @@ public class MarksVO {
 		this.totalMarks = totalMarks;
 		this.marksObtained = marksObtained;
 		this.grade = grade;
+	}
+
+	public MarksVO(String rollNo, String subjectCode, String subjectName, int year, int term, int totalMarks,
+				   Double marksObtained, String grade, String updateDeleteStatus) {
+		this.rollNo = rollNo;
+		this.subjectCode = subjectCode;
+		this.subjectName = subjectName;
+		this.year = year;
+		this.term = term;
+		this.totalMarks = totalMarks;
+		this.marksObtained = marksObtained;
+		this.grade = grade;
+		this.updateDeleteStatus = updateDeleteStatus;
 	}
 
 	public String getRollNo() {
@@ -88,6 +102,14 @@ public class MarksVO {
 
 	public void setGrade(String grade) {
 		this.grade = grade;
+	}
+
+	public String getUpdateDeleteStatus() {
+		return updateDeleteStatus;
+	}
+
+	public void setUpdateDeleteStatus(String updateDeleteStatus) {
+		this.updateDeleteStatus = updateDeleteStatus;
 	}
 
 	@Override
