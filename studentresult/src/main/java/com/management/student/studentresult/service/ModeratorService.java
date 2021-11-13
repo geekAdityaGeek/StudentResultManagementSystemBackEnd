@@ -85,8 +85,8 @@ public class ModeratorService {
 	}
 
 	public List<String> getSubjUseCodeName() {
-		List<String> termList = subjectRepository.findSubjectByCodeName();
-		return termList;
+		List<String> subjectList = subjectRepository.findSubjectByCodeName();
+		return subjectList;
 	}
 
 	public String marksSingleUpload(MarksVO marksVO) throws Exception {
