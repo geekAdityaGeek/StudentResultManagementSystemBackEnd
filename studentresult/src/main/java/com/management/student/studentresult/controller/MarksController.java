@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,18 +27,28 @@ public class MarksController {
     private MarksService marksService;
 
     @GetMapping("/getMarks")
-    public List<MarksVO> queryMarks(@RequestBody QueryVO query){
-        return marksService.getMarksDetailsWithoutPagination(query);
+    public ResponseEntity<?> queryMarks(@RequestBody QueryVO query){
+        try {
+            List<MarksVO> response =  marksService.getMarksDetailsWithoutPagination(query);
+            if(response.size() == 0 )
+                throw new Exception("No marks found !");
+            return new ResponseEntity<List<MarksVO>>(response, HttpStatus.OK);
+        } catch(Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/getMarks/pagination")
-    public List<MarksVO> queryMarksPagination(@RequestParam Map<String, String> requestParameters){
-        int page = Integer.parseInt(requestParameters.get("page"));
-        int items = Integer.parseInt(requestParameters.get("items"));
-        QueryVO query = QueryVOMapper.mapFromRequestParameter(requestParameters);
-        Pageable pageable = PageRequest.of(page, items, Sort.by("year").descending().by("term").descending());
-        List<MarksVO> marksList = marksService.getMarksDetailsWithPagination(query, pageable);
-        return marksList; 
+    public ResponseEntity<?> queryMarksPagination(@RequestBody QueryVO query, @RequestParam int page, @RequestParam int items){
+        try {
+            Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
+            List<MarksVO> response = marksService.getMarksDetailsWithPagination(query, pageable);
+            if(response.size() == 0 )
+                throw new Exception("No marks found !");
+            return new ResponseEntity<List<MarksVO>>(response, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/marks")
