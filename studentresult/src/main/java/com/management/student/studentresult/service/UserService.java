@@ -46,9 +46,13 @@ public class UserService implements UserDetailsService{
         return repository.findById(id).orElse(null);
     }
 
-    public UserDetails getUserDetailsByRoll(String id) throws ParseException {
+    public User getUserByExtId(String extId){
+        return repository.findByExtId(extId);
+    }
 
-        User user = repository.findByExtId(id);
+    public UserDetails getUserDetailsByExtId(String extId) throws ParseException {
+
+        User user = getUserByExtId(extId);
         UserDetails userDetails = new UserDetails();
         userDetails.setName(user.getName());
         userDetails.setId(user.getExtId());

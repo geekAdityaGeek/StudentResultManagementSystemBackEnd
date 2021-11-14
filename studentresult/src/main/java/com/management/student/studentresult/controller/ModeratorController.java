@@ -3,17 +3,16 @@
  */
 package com.management.student.studentresult.controller;
 
+import com.management.student.studentresult.service.MarksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.management.student.studentresult.service.ModeratorService;
+import com.management.student.studentresult.vo.MarksVO;
+import com.management.student.studentresult.vo.ResponseMessage;
 
 import java.util.List;
 
@@ -23,27 +22,31 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/moderator")
-@CrossOrigin
+@CrossOrigin("*")
 public class ModeratorController {
 
 	@Autowired
 	private ModeratorService moderatorService;
 
+	@Autowired
+	private MarksService marksService;
+
 	@RequestMapping(value = "/bulkUpload", method = RequestMethod.POST)
 	public ResponseEntity<?> marksBulkUpload(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpl) {
-		String response = "";
+		ResponseMessage respMsg = null;
 		try {
-			response = moderatorService.marksBulkUpload(fileMarksUpl);
+			String response = moderatorService.marksBulkUpload(fileMarksUpl);
+			respMsg = new ResponseMessage(response);
 		} catch (Exception ex) {
-			response = ex.getMessage();
-			return new ResponseEntity<String>(response, HttpStatus.BAD_REQUEST);
+			respMsg = new ResponseMessage(ex.getMessage());
+			return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.EXPECTATION_FAILED);
 		}
-		return new ResponseEntity<String>(response, HttpStatus.ACCEPTED);
+		return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/getUniqueTerms", method = RequestMethod.GET)
 	public ResponseEntity<?> uniqueTerms() {
-		List<String> response ;
+		List<String> response;
 		try {
 			response = moderatorService.getTerms();
 		} catch (Exception ex) {
@@ -55,7 +58,7 @@ public class ModeratorController {
 
 	@RequestMapping(value = "/getListSubjCodeName", method = RequestMethod.GET)
 	public ResponseEntity<?> subjCodeName() {
-		List<String> response ;
+		List<String> response;
 		try {
 			response = moderatorService.getSubjUseCodeName();
 		} catch (Exception ex) {
@@ -65,4 +68,42 @@ public class ModeratorController {
 		return new ResponseEntity<List<String>>(response, HttpStatus.ACCEPTED);
 	}
 
+	@RequestMapping(value = "/singleUpload", method = RequestMethod.POST)
+	public ResponseEntity<?> marksSingleUpload(@RequestBody MarksVO marksVO) {
+		ResponseMessage respMsg = null;
+		try {
+			String response = moderatorService.marksSingleUpload(marksVO);
+			respMsg = new ResponseMessage(response);
+		} catch (Exception ex) {
+			respMsg = new ResponseMessage(ex.getMessage());
+			return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.EXPECTATION_FAILED);
+		}
+		return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/bulkUpdate", method = RequestMethod.POST)
+	public ResponseEntity<?> marksBulkUpdate(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpdt) {
+		ResponseMessage respMsg = null;
+		try {
+			String response = moderatorService.marksBulkUpdate(fileMarksUpdt);
+			respMsg = new ResponseMessage(response);
+		} catch (Exception ex) {
+			respMsg = new ResponseMessage(ex.getMessage());
+			return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.EXPECTATION_FAILED);
+		}
+		return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/updateMarks", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<?> updateMarks(@RequestBody List<MarksVO> marksVO) {
+		List<MarksVO> response ;
+		try {
+			response = marksService.updateMarksQueryResult(marksVO);
+		} catch (Exception ex) {
+			String res = ex.getMessage();
+			return new ResponseEntity<String>(res, HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<List<MarksVO>>(response, HttpStatus.ACCEPTED);
+	}
 }

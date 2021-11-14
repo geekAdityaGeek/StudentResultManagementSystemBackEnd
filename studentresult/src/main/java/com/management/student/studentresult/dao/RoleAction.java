@@ -20,17 +20,20 @@ public class RoleAction {
     private Action action;
     private String access;
     private String status;
-    @Column(name = "created_by")
-    private String createdBy;
+    @ManyToOne
+    @JoinColumn(name="created_by")
+    private User createdBy;
     @Column(name = "created_at")
     private Date createdAt;
-    @Column(name = "modified_by")
-    private String modifiedBy;
+    @ManyToOne
+    @JoinColumn(name="modified_by")
+    private User modifiedBy;
     @Column(name = "modified_at")
     private Date modifiedAt;
 
     @PrePersist
     void created_at() {
+        this.status = "ACTIVE";
         this.createdAt = this.modifiedAt = new Date();
     }
 
@@ -89,11 +92,11 @@ public class RoleAction {
         this.status = status;
     }
 
-    public String getCreatedBy() {
+    public User getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -105,11 +108,11 @@ public class RoleAction {
         this.createdAt = createdAt;
     }
 
-    public String getModifiedBy() {
+    public User getModifiedBy() {
         return modifiedBy;
     }
 
-    public void setModifiedBy(String modifiedBy) {
+    public void setModifiedBy(User modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 

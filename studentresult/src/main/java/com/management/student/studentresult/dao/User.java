@@ -31,19 +31,21 @@ public class User {
 	@Column(nullable = false)
 	private Date dob;
 	@Column(nullable = false)
-	private String status; 
-	@Column(name = "created_by")
-	private String createdBy; 
+	private String status;
+	@OneToOne
+	@JoinColumn(name="created_by")
+	private User createdBy;
 	@Column(name = "created_at")
-	private Date createdAt; 
-	@Column(name = "modified_by")
-	private String modifiedBy; 
+	private Date createdAt;
+	@OneToOne
+	@JoinColumn(name="modified_by")
+	private User modifiedBy;
 	@Column(name = "modified_at")
 	private Date modifiedAt;
 
 	@PrePersist
 	void created_at() {
-		this.createdBy = name;
+		this.status = "ACTIVE";
 		this.createdAt = this.modifiedAt = new Date(); 
 	}
 	
@@ -52,7 +54,7 @@ public class User {
 		this.modifiedAt = new Date(); 
 	}
 
-	public User(Auth auth, Role role, String extId, String name, String address, String phone, Date dob) throws ParseException {
+	public User(Auth auth, Role role, String extId, String name, String address, String phone, Date dob){
 		this.auth = auth;
 		this.role = role;
 		this.extId = extId;
@@ -138,11 +140,11 @@ public class User {
 		this.status = status;
 	}
 
-	public String getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -154,11 +156,11 @@ public class User {
 		this.createdAt = createdAt;
 	}
 
-	public String getModifiedBy() {
+	public User getModifiedBy() {
 		return modifiedBy;
 	}
 
-	public void setModifiedBy(String modifiedBy) {
+	public void setModifiedBy(User modifiedBy) {
 		this.modifiedBy = modifiedBy;
 	}
 
