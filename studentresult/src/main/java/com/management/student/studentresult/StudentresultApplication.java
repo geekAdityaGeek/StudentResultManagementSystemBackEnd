@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-@SpringBootApplication(exclude={SecurityAutoConfiguration.class})
+@SpringBootApplication
 public class StudentresultApplication {
 
     public static void main(String[] args) {
