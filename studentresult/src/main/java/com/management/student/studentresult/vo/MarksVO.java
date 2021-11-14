@@ -1,5 +1,7 @@
 package com.management.student.studentresult.vo;
 
+import com.management.student.studentresult.enums.Operation;
+
 public class MarksVO {
 
 	private String rollNo;
@@ -10,6 +12,7 @@ public class MarksVO {
 	private int totalMarks;
 	private Double marksObtained;
 	private String grade;
+	private String operation;
 
 	public MarksVO() {
 	}
@@ -24,6 +27,12 @@ public class MarksVO {
 		this.totalMarks = totalMarks;
 		this.marksObtained = marksObtained;
 		this.grade = grade;
+	}
+
+	public MarksVO(String rollNo, String subjectCode, String subjectName, int year, int term, int totalMarks,
+				   Double marksObtained, String grade, String operation) {
+		this(rollNo, subjectCode, subjectName, year, term, totalMarks, marksObtained, grade);
+		this.operation = operation;
 	}
 
 	public String getRollNo() {
@@ -88,6 +97,14 @@ public class MarksVO {
 
 	public void setGrade(String grade) {
 		this.grade = grade;
+	}
+
+	public String getOperation() {
+		return operation;
+	}
+
+	public void setOperation(String operation) {
+		this.operation = operation;
 	}
 
 	@Override

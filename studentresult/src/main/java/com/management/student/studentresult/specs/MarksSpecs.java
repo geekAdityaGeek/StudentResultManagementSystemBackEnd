@@ -23,21 +23,21 @@ public class MarksSpecs {
 
     public static Specification<Marks> marksUserEquals(User user, String rollNumber){
         return (root, query, builder) ->
-                user == null && rollNumber == null ?
+                user == null && (rollNumber == null || "".equalsIgnoreCase(rollNumber)) ?
                         builder.conjunction() :
                         builder.equal(root.get("user"), user);
     }
 
     public static Specification<Marks> marksSubjectEquals(Subject subject, String subjectCode){
         return (root, query, builder) ->
-                subject == null && subjectCode == null ?
+                subject == null && (subjectCode == null || "".equalsIgnoreCase(subjectCode))?
                         builder.conjunction() :
                         builder.equal(root.get("subject"), subject);
     }
 
     public static Specification<Marks> subjectNameEquals(String name){
         return (root, query, builder) ->
-                name == null ?
+                name == null || "".equalsIgnoreCase(name) ?
                         builder.conjunction() :
                         builder.equal(root.get("name"), name);
     }
