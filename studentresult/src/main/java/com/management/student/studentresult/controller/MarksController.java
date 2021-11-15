@@ -39,8 +39,11 @@ public class MarksController {
     }
 
     @GetMapping("/getMarks/pagination")
-    public ResponseEntity<?> queryMarksPagination(@RequestBody QueryVO query, @RequestParam int page, @RequestParam int items){
+    public ResponseEntity<?> queryMarksPagination(@RequestParam Map<String, String> requestParameters){
         try {
+            int page = Integer.parseInt(requestParameters.get("page"));
+            int items = Integer.parseInt(requestParameters.get("items"));
+            QueryVO query = QueryVOMapper.mapFromRequestParameter(requestParameters);
             Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
             List<MarksVO> response = marksService.getMarksDetailsWithPagination(query, pageable);
             if(response.size() == 0 )
