@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/objection")
@@ -28,9 +30,8 @@ public class ObjectionController {
     private ObjectionService objectionService;
 
     @RequestMapping(value = "/raiseObjection", method = RequestMethod.POST)
-    public ResponseEntity<?> studentRaiseObjection(@RequestBody MarksVO marksVO) {
-        System.out.println("nnnn");
-        Objection objection;
+    public ResponseEntity<?> studentRaiseObjection(@RequestBody List<MarksVO> marksVO) {
+        List<Objection> objection;
         try {
             //check
             objection = objectionService.raiseObjection(marksVO);
@@ -38,6 +39,6 @@ public class ObjectionController {
             String res = ex.getMessage();
             return new ResponseEntity<String>(res, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Objection>(objection, HttpStatus.OK);
+        return new ResponseEntity<List<Objection>>(objection, HttpStatus.OK);
     }
 }
