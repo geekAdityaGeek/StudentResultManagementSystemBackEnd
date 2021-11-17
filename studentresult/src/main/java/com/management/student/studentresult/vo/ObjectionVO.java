@@ -5,6 +5,10 @@ public class ObjectionVO extends MarksVO {
     private String operation;
     private String comments;
 
+    public ObjectionVO() {
+        
+    }
+    
     ObjectionVO(String rollNo, String subjectCode, String subjectName, int year, int term,
                 int totalMarks, Double marksObtained, String comments, String operation, String grade) {
         super(rollNo, subjectCode, subjectName, year, term, totalMarks, marksObtained, grade);

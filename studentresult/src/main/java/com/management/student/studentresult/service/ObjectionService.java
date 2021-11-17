@@ -7,6 +7,7 @@ import com.management.student.studentresult.repository.ObjectionRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
 import com.management.student.studentresult.vo.MarksVO;
 import com.management.student.studentresult.vo.ObjectionVO;
+import com.management.student.studentresult.vo.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +63,54 @@ public class ObjectionService {
             objectionVOList.add(objection);
 
         }
+        return objectionVOList;
+    }
+
+    public List<ObjectionVO> getObjections(String extId) {
+        List<ObjectionVO> objectionVOList = new ArrayList<>();
+        User user = userService.getUserByExtId(extId);
+        List<Objection> objections = objectionRepository.findAllByCreatedBy(user);
+        for (Objection objection : objections) {
+            ObjectionVO objectionVO = new ObjectionVO();
+            objectionVO.setComments(objection.getComment());
+            objectionVO.setOperation(objection.getStatus());
+            objectionVO.setGrade(objection.getMarks().getGrade());
+            objectionVO.setRollNo(objection.getCreatedBy().getExtId());
+            objectionVO.setYear(objection.getMarks().getYear());
+            objectionVO.setTerm(objection.getMarks().getTerm());
+            objectionVO.setSubjectCode(objection.getMarks().getSubject().getSubCode());
+            objectionVO.setTotalMarks(objection.getMarks().getTotScore());
+            objectionVO.setMarksObtained(objection.getMarks().getScore());
+            objectionVO.setSubjectName(objection.getMarks().getSubject().getName());
+            objectionVOList.add(objectionVO);
+        }
+
+        return objectionVOList;
+    }
+
+    public List<ObjectionVO> getModObjections(String extId) {
+        List<ObjectionVO> objectionVOList = new ArrayList<>();
+        User user = userService.getUserByExtId(extId);
+        List<Objection> objections = objectionRepository.findAllByResolverId(user);
+        for (Objection objection : objections) {
+            if (objection.getStatus().isEmpty()) {
+                ObjectionVO objectionVO = new ObjectionVO();
+                Subject subject = subjectRepository.findBySubCode(objection.getMarks().getSubject().getSubCode());
+                Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, objection.getMarks().getTerm(), objection.getMarks().getYear());
+                objectionVO.setComments(objection.getComment());
+                objectionVO.setOperation(objection.getStatus());
+                objectionVO.setGrade(objection.getMarks().getGrade());
+                objectionVO.setRollNo(objection.getCreatedBy().getExtId());
+                objectionVO.setYear(objection.getMarks().getYear());
+                objectionVO.setTerm(objection.getMarks().getTerm());
+                objectionVO.setSubjectCode(objection.getMarks().getSubject().getSubCode());
+                objectionVO.setTotalMarks(objection.getMarks().getTotScore());
+                objectionVO.setMarksObtained(objection.getMarks().getScore());
+                objectionVO.setSubjectName(objection.getMarks().getSubject().getName());
+                objectionVOList.add(objectionVO);
+            }
+        }
+
         return objectionVOList;
     }
 }
