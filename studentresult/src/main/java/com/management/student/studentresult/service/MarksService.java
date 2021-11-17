@@ -9,6 +9,7 @@ import com.management.student.studentresult.repository.SubjectRepository;
 import com.management.student.studentresult.repository.UserRepository;
 import com.management.student.studentresult.specs.MarksSpecs;
 import com.management.student.studentresult.vo.MarksVO;
+import com.management.student.studentresult.vo.PagingMarksVO;
 import com.management.student.studentresult.vo.QueryVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,7 +61,7 @@ public class MarksService {
         return marksVOList;
     }
 
-    public List<MarksVO> getMarksDetailsWithPagination(QueryVO queryVO, Pageable pageable) {
+    public PagingMarksVO getMarksDetailsWithPagination(QueryVO queryVO, Pageable pageable) {
 
         List<MarksVO> marksVOList= new ArrayList<>();
 
@@ -70,7 +71,8 @@ public class MarksService {
         Specification spec2 = MarksSpecs.marksUserEquals(user, queryVO.getRollNumber());
         Specification spec3 = MarksSpecs.marksTermEquals(queryVO.getTerm());
         Specification spec4 = MarksSpecs.marksYearEquals(queryVO.getYear());
-        Specification querySpec = Specification.where(spec1).and(spec2).and(spec3).and(spec4);
+        Specification spec5 = MarksSpecs.marksStatusActive();
+        Specification querySpec = Specification.where(spec1).and(spec2).and(spec3).and(spec4).and(spec5);
 
         Page<Marks> marksList = repository.findAll(querySpec, pageable);
 
@@ -79,7 +81,7 @@ public class MarksService {
             marksVOList.add(marksVO);
         }
 
-        return marksVOList;
+        return new PagingMarksVO(pageable.getPageNumber(), marksList.getTotalPages(), pageable.getPageSize(), marksVOList);
     }
 
     public List<MarksVO> updateMarksQueryResult(List<MarksVO> marksVO) throws ParseException {

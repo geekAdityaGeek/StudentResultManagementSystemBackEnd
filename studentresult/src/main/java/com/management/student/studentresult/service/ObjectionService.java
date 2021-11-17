@@ -9,6 +9,8 @@ import com.management.student.studentresult.vo.MarksVO;
 import com.management.student.studentresult.vo.ObjectionVO;
 import com.management.student.studentresult.vo.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,9 +41,9 @@ public class ObjectionService {
         Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
         Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, marksVO.getTerm(), marksVO.getYear());
         objection.setMarks(mark);
-//        objection.setResolverId(mark.getCreatedBy());
+        objection.setResolverId(mark.getModifiedBy());
         objectionRepository.save(objection);
-        String response = "Objection raised Successfullly";
+        String response = "Objection raised Successfully";
         return objection;
     }
 
@@ -66,10 +68,10 @@ public class ObjectionService {
         return objectionVOList;
     }
 
-    public List<ObjectionVO> getObjections(String extId) {
+    public List<ObjectionVO> getObjections(String extId, Pageable pageable) {
         List<ObjectionVO> objectionVOList = new ArrayList<>();
         User user = userService.getUserByExtId(extId);
-        List<Objection> objections = objectionRepository.findAllByCreatedBy(user);
+        Page<Objection> objections = objectionRepository.findAllByCreatedBy(user, pageable);
         for (Objection objection : objections) {
             ObjectionVO objectionVO = new ObjectionVO();
             objectionVO.setComments(objection.getComment());
@@ -88,12 +90,12 @@ public class ObjectionService {
         return objectionVOList;
     }
 
-    public List<ObjectionVO> getModObjections(String extId) {
+    public List<ObjectionVO> getModObjections(String extId, Pageable pageable) {
         List<ObjectionVO> objectionVOList = new ArrayList<>();
         User user = userService.getUserByExtId(extId);
-        List<Objection> objections = objectionRepository.findAllByResolverId(user);
+        Page<Objection> objections = objectionRepository.findAllByResolverId(user, pageable);
         for (Objection objection : objections) {
-            if (objection.getStatus().isEmpty()) {
+            if (objection.getStatus()==null || objection.getStatus().isEmpty()) {
                 ObjectionVO objectionVO = new ObjectionVO();
                 Subject subject = subjectRepository.findBySubCode(objection.getMarks().getSubject().getSubCode());
                 Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, objection.getMarks().getTerm(), objection.getMarks().getYear());
