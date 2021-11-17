@@ -8,7 +8,7 @@ public class UserDetails {
     private String gender;
     private String contactno;
     private String role;
-    private String id;
+    private String extId;
     private Date dob;
     private String address;
     private String email;
@@ -18,9 +18,9 @@ public class UserDetails {
     public UserDetails() {
     }
 
-    public UserDetails(String name, String id, Date dob, String address, String contactno, String email, String password, int roleId) {
+    public UserDetails(String name, String extId, Date dob, String address, String contactno, String email, String password, int roleId) {
         this.name = name;
-        this.id = id;
+        this.extId = extId;
         this.dob = dob;
         this.address = address;
         this.contactno = contactno;
@@ -61,12 +61,12 @@ public class UserDetails {
 		this.role = role;
 	}
 
-	public String getId() {
-		return id;
+	public String getExtId() {
+		return extId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setExtId(String extId) {
+		this.extId = extId;
 	}
 
 	public Date getDob() {
