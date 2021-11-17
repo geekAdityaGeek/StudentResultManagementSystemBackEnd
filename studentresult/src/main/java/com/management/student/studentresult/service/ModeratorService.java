@@ -3,7 +3,6 @@
  */
 package com.management.student.studentresult.service;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -43,7 +42,7 @@ public class ModeratorService {
 	@Autowired
 	private MarksRepository marksRepository;
 
-	public String marksBulkUpload(MultipartFile fileMarksUpl) throws Exception {
+	public String marksBulkUpload(MultipartFile fileMarksUpl, String modExitId) throws Exception {
 		// TODO Auto-generated method stub
 		String response = "";
 		XSSFWorkbook workbook = null;
@@ -51,6 +50,7 @@ public class ModeratorService {
 		workbook = new XSSFWorkbook(stream);
 		XSSFSheet sheet = workbook.getSheetAt(0);
 		Iterator<Row> rowItr = sheet.iterator();
+		User moderator = userRepository.findByExtId(modExitId);
 		while (rowItr.hasNext()) {
 			Row row = rowItr.next();
 			if (row.getRowNum() == 0)
@@ -67,7 +67,7 @@ public class ModeratorService {
 			boolean checkExistence = findExistence(rollNo, subjectCode, false);
 			if (checkExistence) {
 				Marks mark = new Marks(student, subject, marksObtained, totalMarks.intValue(), year.intValue(),
-						term.intValue(), grade);
+						term.intValue(), grade, moderator);
 				marksRepository.save(mark);
 			}
 		}
@@ -89,14 +89,15 @@ public class ModeratorService {
 		return subjectList;
 	}
 
-	public String marksSingleUpload(MarksVO marksVO) throws Exception {
+	public String marksSingleUpload(MarksVO marksVO, String modExitId) throws Exception {
 		// TODO Auto-generated method stub
 		boolean checkExistence = findExistence(marksVO.getRollNo(), marksVO.getSubjectCode(), false);
 		if (checkExistence) {
 			User student = userRepository.findByExtId(marksVO.getRollNo());
 			Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
+			User moderator = userRepository.findByExtId(modExitId);
 			Marks marks = new Marks(student, subject, marksVO.getMarksObtained(), marksVO.getTotalMarks(),
-					marksVO.getYear(), marksVO.getTerm(), marksVO.getGrade());
+					marksVO.getYear(), marksVO.getTerm(), marksVO.getGrade(), moderator);
 			marksRepository.save(marks);
 		}
 		String response = "Marks Uploaded Successfullly";
@@ -107,6 +108,9 @@ public class ModeratorService {
 		// TODO Auto-generated method stub
 		User student = userRepository.findByExtId(rollNo);
 		Subject subject = subjectRepository.findBySubCode(subjectCode);
+		if (!student.getRole().getName().equalsIgnoreCase("STUDENT")) {
+			throw new Exception("Student Id is incorrect. Please check.");
+		}
 		if (student == null || subject == null) {
 			throw new Exception("Student or Subject not found. Please check and upload.");
 		}
@@ -117,7 +121,7 @@ public class ModeratorService {
 		return true;
 	}
 
-	public String marksBulkUpdate(MultipartFile fileMarksUpdt) throws Exception {
+	public String marksBulkUpdate(MultipartFile fileMarksUpdt, String modExitId) throws Exception {
 		// TODO Auto-generated method stub
 		String response = "";
 		XSSFWorkbook workbook = null;
@@ -125,6 +129,7 @@ public class ModeratorService {
 		workbook = new XSSFWorkbook(stream);
 		XSSFSheet sheet = workbook.getSheetAt(0);
 		Iterator<Row> rowItr = sheet.iterator();
+		User moderator = userRepository.findByExtId(modExitId);
 		while (rowItr.hasNext()) {
 			Row row = rowItr.next();
 			if (row.getRowNum() == 0)
@@ -151,6 +156,7 @@ public class ModeratorService {
 				mark.setScore(marksObtained);
 				mark.setTotScore(totalMarks.intValue());
 				mark.setGrade(grade);
+				mark.setModifiedBy(moderator);
 				marksRepository.save(mark);
 			}
 		}
