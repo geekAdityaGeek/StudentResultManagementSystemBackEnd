@@ -41,4 +41,9 @@ public class MarksSpecs {
                         builder.conjunction() :
                         builder.equal(root.get("name"), name);
     }
+
+    public static Specification<Marks> marksStatusActive() {
+        return (root, query, builder) ->
+                builder.equal(root.get("status"), "ACTIVE");
+    }
 }

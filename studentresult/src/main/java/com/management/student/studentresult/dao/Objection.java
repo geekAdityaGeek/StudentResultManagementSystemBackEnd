@@ -36,7 +36,6 @@ public class Objection {
 
     @PrePersist
     void created_at() {
-        //this.status = "ACTIVE";
         this.createdAt = this.modifiedAt = new Date();
     }
 
