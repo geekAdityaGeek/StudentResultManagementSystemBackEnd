@@ -47,7 +47,8 @@ public class MarksService {
         Specification spec2 = MarksSpecs.marksUserEquals(user, queryVO.getRollNumber());
         Specification spec3 = MarksSpecs.marksTermEquals(queryVO.getTerm());
         Specification spec4 = MarksSpecs.marksYearEquals(queryVO.getYear());
-        Specification querySpec = Specification.where(spec1).and(spec2).and(spec3).and(spec4);
+        Specification spec5 = MarksSpecs.marksStatusActive();
+        Specification querySpec = Specification.where(spec1).and(spec2).and(spec3).and(spec4).and(spec5);
 
         List<Marks> marksList = repository.findAll(querySpec, Sort.by("createdAt").ascending());
 
