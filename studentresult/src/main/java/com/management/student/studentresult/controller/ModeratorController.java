@@ -32,10 +32,11 @@ public class ModeratorController {
 	private MarksService marksService;
 
 	@RequestMapping(value = "/bulkUpload", method = RequestMethod.POST)
-	public ResponseEntity<?> marksBulkUpload(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpl) {
+	public ResponseEntity<?> marksBulkUpload(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpl,
+			@RequestParam(name = "extId") String modExitId) {
 		ResponseMessage respMsg = null;
 		try {
-			String response = moderatorService.marksBulkUpload(fileMarksUpl);
+			String response = moderatorService.marksBulkUpload(fileMarksUpl, modExitId);
 			respMsg = new ResponseMessage(response);
 		} catch (Exception ex) {
 			respMsg = new ResponseMessage(ex.getMessage());
@@ -69,10 +70,11 @@ public class ModeratorController {
 	}
 
 	@RequestMapping(value = "/singleUpload", method = RequestMethod.POST)
-	public ResponseEntity<?> marksSingleUpload(@RequestBody MarksVO marksVO) {
+	public ResponseEntity<?> marksSingleUpload(@RequestBody MarksVO marksVO,
+			@RequestParam(name = "extId") String modExitId) {
 		ResponseMessage respMsg = null;
 		try {
-			String response = moderatorService.marksSingleUpload(marksVO);
+			String response = moderatorService.marksSingleUpload(marksVO, modExitId);
 			respMsg = new ResponseMessage(response);
 		} catch (Exception ex) {
 			respMsg = new ResponseMessage(ex.getMessage());
@@ -82,10 +84,11 @@ public class ModeratorController {
 	}
 
 	@RequestMapping(value = "/bulkUpdate", method = RequestMethod.POST)
-	public ResponseEntity<?> marksBulkUpdate(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpdt) {
+	public ResponseEntity<?> marksBulkUpdate(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpdt,
+			@RequestParam(name = "extId") String modExitId) {
 		ResponseMessage respMsg = null;
 		try {
-			String response = moderatorService.marksBulkUpdate(fileMarksUpdt);
+			String response = moderatorService.marksBulkUpdate(fileMarksUpdt, modExitId);
 			respMsg = new ResponseMessage(response);
 		} catch (Exception ex) {
 			respMsg = new ResponseMessage(ex.getMessage());
@@ -97,7 +100,7 @@ public class ModeratorController {
 	@RequestMapping(value = "/updateMarks", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<?> updateMarks(@RequestBody List<MarksVO> marksVO) {
-		List<MarksVO> response ;
+		List<MarksVO> response;
 		try {
 			response = marksService.updateMarksQueryResult(marksVO);
 		} catch (Exception ex) {

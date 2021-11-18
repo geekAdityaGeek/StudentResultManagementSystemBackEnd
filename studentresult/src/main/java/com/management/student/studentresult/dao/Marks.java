@@ -48,7 +48,7 @@ public class Marks {
         this.modifiedAt = new Date();
     }
 
-    public Marks(User user, Subject subject, Double score, int totScore, int year, int term, String grade) {
+    public Marks(User user, Subject subject, Double score, int totScore, int year, int term, String grade, User moderator) {
         this.user = user;
         this.subject = subject;
         this.score = score;
@@ -57,6 +57,7 @@ public class Marks {
         this.term = term;
         this.grade = grade;
         this.status = "ACTIVE";
+        this.createdBy = moderator;
     }
 
     public Marks(User user, int year, int term) {
