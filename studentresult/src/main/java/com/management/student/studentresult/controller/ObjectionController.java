@@ -6,8 +6,6 @@ import com.management.student.studentresult.service.ModeratorService;
 import com.management.student.studentresult.service.ObjectionService;
 import com.management.student.studentresult.vo.MarksVO;
 import com.management.student.studentresult.vo.ObjectionVO;
-import com.management.student.studentresult.vo.ResponseMessage;
-import com.management.student.studentresult.vo.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -82,7 +79,7 @@ public class ObjectionController {
             String extId = requestParams.get("extId");
             int page = Integer.parseInt(requestParams.get("page"));
             int items = Integer.parseInt(requestParams.get("items"));
-            Pageable pageable = PageRequest.of(page, items, Sort.by("createdAy").descending());
+            Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
             objectionVOList = objectionService.getModObjections(extId, pageable);
         } catch (Exception ex) {
             String res = ex.getMessage();
