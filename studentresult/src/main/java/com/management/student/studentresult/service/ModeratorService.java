@@ -7,13 +7,13 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.management.student.studentresult.dao.Marks;
@@ -30,7 +30,7 @@ import com.management.student.studentresult.vo.MarksVO;
  */
 
 @Service
-@Transactional(rollbackOn = Exception.class)
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 public class ModeratorService {
 
 	@Autowired
@@ -108,12 +108,13 @@ public class ModeratorService {
 		// TODO Auto-generated method stub
 		User student = userRepository.findByExtId(rollNo);
 		Subject subject = subjectRepository.findBySubCode(subjectCode);
-		if (!student.getRole().getName().equalsIgnoreCase("STUDENT")) {
-			throw new Exception("Student Id is incorrect. Please check.");
-		}
 		if (student == null || subject == null) {
 			throw new Exception("Student or Subject not found. Please check and upload.");
 		}
+		if (!student.getRole().getName().equalsIgnoreCase("STUDENT")) {
+			throw new Exception("Student Id is incorrect. Please check.");
+		}
+
 		Marks checkMarkExist = marksRepository.findByUserAndSubject(student, subject);
 		if (checkMarkExist != null && !updateFlag) {
 			throw new Exception("Student found with same subject code. Please check and upload");

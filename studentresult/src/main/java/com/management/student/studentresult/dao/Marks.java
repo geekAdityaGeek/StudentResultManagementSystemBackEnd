@@ -58,6 +58,7 @@ public class Marks {
         this.grade = grade;
         this.status = "ACTIVE";
         this.createdBy = moderator;
+        this.modifiedBy = moderator;
     }
 
     public Marks(User user, int year, int term) {
