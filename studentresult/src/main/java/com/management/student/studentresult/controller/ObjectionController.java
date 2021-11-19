@@ -6,6 +6,7 @@ import com.management.student.studentresult.service.ModeratorService;
 import com.management.student.studentresult.service.ObjectionService;
 import com.management.student.studentresult.vo.MarksVO;
 import com.management.student.studentresult.vo.ObjectionVO;
+import com.management.student.studentresult.vo.PagingObjectionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -58,34 +59,34 @@ public class ObjectionController {
 
     @GetMapping("/studentObjections")
     public ResponseEntity<?> getStudentsObjection(@RequestParam Map<String, String> requestParams) {
-        List<ObjectionVO> objectionVOList;
+        PagingObjectionVO response;
         try {
             String extId = requestParams.get("extId");
             int page = Integer.parseInt(requestParams.get("page"));
             int items = Integer.parseInt(requestParams.get("items"));
-            Pageable pageable = PageRequest.of(page, items, Sort.by("createdAy").descending());
-            objectionVOList = objectionService.getObjections(extId, pageable);
+            Pageable pageable = PageRequest.of(page, items, Sort.by("createdBy").descending());
+            response = objectionService.getObjections(extId, pageable);
         } catch (Exception ex) {
             String res = ex.getMessage();
             return new ResponseEntity<String>(res, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<List<ObjectionVO>>(objectionVOList, HttpStatus.OK);
+        return new ResponseEntity<PagingObjectionVO>(response, HttpStatus.OK);
     }
 
     @GetMapping("/modObjections")
     public ResponseEntity<?> getModeratorsObjection(@RequestParam Map<String, String> requestParams) {
-        List<ObjectionVO> objectionVOList;
+        PagingObjectionVO response;
         try {
             String extId = requestParams.get("extId");
             int page = Integer.parseInt(requestParams.get("page"));
             int items = Integer.parseInt(requestParams.get("items"));
             Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
-            objectionVOList = objectionService.getModObjections(extId, pageable);
+            response = objectionService.getModObjections(extId, pageable);
         } catch (Exception ex) {
             String res = ex.getMessage();
             return new ResponseEntity<String>(res, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<List<ObjectionVO>>(objectionVOList, HttpStatus.OK);
+        return new ResponseEntity<PagingObjectionVO>(response, HttpStatus.OK);
     }
 
 
