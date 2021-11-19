@@ -7,6 +7,7 @@ import com.management.student.studentresult.repository.ObjectionRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
 import com.management.student.studentresult.vo.MarksVO;
 import com.management.student.studentresult.vo.ObjectionVO;
+import com.management.student.studentresult.vo.PagingObjectionVO;
 import com.management.student.studentresult.vo.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -67,7 +68,7 @@ public class ObjectionService {
         return objectionVOList;
     }
 
-    public List<ObjectionVO> getObjections(String extId, Pageable pageable) {
+    public PagingObjectionVO getObjections(String extId, Pageable pageable) {
         List<ObjectionVO> objectionVOList = new ArrayList<>();
         User user = userService.getUserByExtId(extId);
         Page<Objection> objections = objectionRepository.findAllByCreatedBy(user, pageable);
@@ -86,10 +87,10 @@ public class ObjectionService {
             objectionVOList.add(objectionVO);
         }
 
-        return objectionVOList;
+        return new PagingObjectionVO(pageable.getPageNumber(), objections.getTotalPages(), pageable.getPageSize(), objectionVOList);
     }
 
-    public List<ObjectionVO> getModObjections(String extId, Pageable pageable) {
+    public PagingObjectionVO getModObjections(String extId, Pageable pageable) {
         List<ObjectionVO> objectionVOList = new ArrayList<>();
         User user = userService.getUserByExtId(extId);
         Page<Objection> objections = objectionRepository.findAllByResolverId(user, pageable);
@@ -112,6 +113,6 @@ public class ObjectionService {
             }
         }
 
-        return objectionVOList;
+        return new PagingObjectionVO(pageable.getPageNumber(), objections.getTotalPages(), pageable.getPageSize(), objectionVOList);
     }
 }
