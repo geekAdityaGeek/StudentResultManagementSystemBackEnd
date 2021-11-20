@@ -25,6 +25,7 @@ public class DownloadController {
     @GetMapping("/result/pdf")
     public void downloadResultPdf(@RequestParam Map<String, String> requestParameters, HttpServletResponse response) throws IOException, ParseException {
         QueryVO query = QueryVOMapper.mapFromRequestParameter(requestParameters);
+        response.setContentType("application/pdf");
         fileDownloadService.exportFile(response, query);
     }
 
