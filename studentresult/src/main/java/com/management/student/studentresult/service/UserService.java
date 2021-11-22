@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService{
         User user = getUserByExtId(extId);
         UserDetails userDetails = new UserDetails();
         userDetails.setName(user.getName());
-        userDetails.setId(user.getExtId());
+        userDetails.setExtId(user.getExtId());
         userDetails.setAddress(user.getAddress());
         userDetails.setContactno(user.getPhone());
         userDetails.setEmail(user.getAuth().getEmail());
@@ -68,14 +68,14 @@ public class UserService implements UserDetailsService{
     	try {
 			if(authService.getAuthByEmail(userDetails.getEmail()).isPresent())
 				throw new Exception("Email already exists!");
-			if(repository.existsByExtId(userDetails.getId()))
+			if(repository.existsByExtId(userDetails.getExtId()))
 				throw new Exception("We have another user with same Id!");
 			if(repository.existsByPhone(userDetails.getContactno()))
 				throw new Exception("This contact number is already taken!");
 			Auth auth = new Auth(userDetails.getEmail(), userDetails.getPassword());
 			auth=authService.saveAuth(auth);
 			Role role = roleService.getRoleByName(userDetails.getRole());
-			User user = new User(auth, role, userDetails.getId(), userDetails.getName(), userDetails.getAddress(), userDetails.getContactno(), userDetails.getDob());
+			User user = new User(auth, role, userDetails.getExtId(), userDetails.getName(), userDetails.getAddress(), userDetails.getContactno(), userDetails.getDob());
 			saveUser(user);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

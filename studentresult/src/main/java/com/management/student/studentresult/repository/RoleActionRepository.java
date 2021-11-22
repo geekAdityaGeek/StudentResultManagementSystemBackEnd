@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface RoleActionRepository extends JpaRepository<RoleAction, Integer> {
 
-    List<Action> findByRoleAndStatus(Role role, String status);
+    List<RoleAction> findByRoleAndStatus(Role role, String status);
 }

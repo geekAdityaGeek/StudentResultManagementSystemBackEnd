@@ -18,7 +18,7 @@ public class ResultPdfUtils {
     public LinkedHashMap<ResultComponentEnum, String> createBasicDetails(UserDetails userDetails){
         LinkedHashMap<ResultComponentEnum, String> basicDetailInfo = new LinkedHashMap<>();
         basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_NAME, userDetails.getName());
-        basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_ROLLNUMBER, userDetails.getId());
+        basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_ROLLNUMBER, userDetails.getExtId());
         basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_DOB, CommonUtils.formatDate(userDetails.getDob()));
 //        basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_DOB,userDetails.getDob());
         basicDetailInfo.put(ResultComponentEnum.BASIC_INFO_EMAIL, userDetails.getEmail());
