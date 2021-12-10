@@ -52,12 +52,22 @@ public class RoleActionController {
     @GetMapping("/actionsByRole/{role}")
     public ResponseEntity<?> actionsByRole(@PathVariable String role){
         try{
-            List<Action> roleActions = actionService.getActionsByRole(role);
+            List<String> roleActions = actionService.getActionsByRole(role);
             if(roleActions == null)
                 throw new Exception();
-            return new ResponseEntity<List<Action>>(roleActions, HttpStatus.OK);
+            return new ResponseEntity<List<String>>(roleActions, HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<String>("Invalid Role", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/action/save")
+    public ResponseEntity<?> saveAction(@RequestBody Action action){
+        try{
+            actionService.addAction(action);
+            return new ResponseEntity<String>("Action Stored Successfully", HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<String>("Unable to store actions", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -18,5 +18,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Integer> {
 
 	@Query(value = "SELECT c.sub_code, c.name FROM subject c" , nativeQuery = true)
 	public List<String> findSubjectByCodeName();
+	
+	public boolean existsBySubCode(String subCode);
 
 }
