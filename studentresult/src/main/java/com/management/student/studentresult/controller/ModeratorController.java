@@ -112,9 +112,5 @@ public class ModeratorController {
 		}
 		return new ResponseEntity<List<MarksVO>>(response, HttpStatus.ACCEPTED);
 	}
-
-	@RequestMapping(value = "/extId", method = RequestMethod.GET)
-	public void getExtId(@RequestParam(name = "extId") String extId) {
-		externalId = extId;
-	}
+	
 }
