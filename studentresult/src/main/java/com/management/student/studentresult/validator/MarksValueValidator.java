@@ -2,9 +2,9 @@ package com.management.student.studentresult.validator;
 
 public class MarksValueValidator extends Validator{
 
-
     private Double totalMarks;
     private Double marks;
+
 
     public MarksValueValidator(Double totalMarks, Double marks) {
 		
@@ -14,8 +14,9 @@ public class MarksValueValidator extends Validator{
 
 	@Override
     public void validateEntity() throws Exception {
-		
-		if(marks < 0){
+
+        if(marks < 0){
+
             throw new Exception("Marks cannot be negative");
         }
         if(totalMarks != null && marks>totalMarks){
