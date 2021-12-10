@@ -16,7 +16,7 @@ public class SubjectController {
     @Autowired
     private SubjectService subjectService;
 
-    @PostMapping("/addSubject")
+    @PostMapping("/subjectAddition")
     public Subject addSubject(@RequestBody Subject subject){
         return subjectService.saveSubject(subject);
     }

@@ -27,12 +27,12 @@ public class UserController {
     @Autowired
     private AuthenticationService authService;
 
-    @PostMapping("/register")
+    @PostMapping("/registration")
     public @ResponseBody ResponseEntity<ResponseMessage> registerUser(@RequestBody UserDetails userDetails){
     	return userService.registrationService(userDetails);
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/authentication")
     public @ResponseBody ResponseEntity<ResponseMessage> authenticateUser(@RequestBody LoginCredentials credentials) {
     	return authService.authenticate(credentials);
     }

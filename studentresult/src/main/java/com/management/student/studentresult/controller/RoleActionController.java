@@ -26,7 +26,7 @@ public class RoleActionController {
     @Autowired
     private ActionService actionService;
 
-    @PostMapping("/addRole")
+    @PostMapping("/roleAddition")
     public Role addRole(@RequestBody Role role){
 
         Role newrole = new Role(role.getName(), role.getCreatedBy(), role.getModifiedBy());
