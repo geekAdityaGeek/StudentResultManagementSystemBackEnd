@@ -14,4 +14,6 @@ public interface MarksRepository extends JpaRepository<Marks, Integer>, JpaSpeci
 	Marks findByUserAndSubject(User user, Subject subject);
 
 	Marks findByUserAndSubjectAndTermAndYear(User user, Subject subject, int term, int year);
+	
+	public boolean existsByUserAndSubjectAndTermAndYear(User user, Subject subject, int term, int year);
 }

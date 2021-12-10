@@ -5,10 +5,14 @@ import java.util.regex.Pattern;
 
 public class ExternalIdFormatValidator extends Validator {
 
-    private static final String userNamePattern = "";
-    private String userName = null;
+    private static final String userNamePattern= "(IMT|MT|PH|DT|MOD)[0-9]{7}";
+    private String userName;
 
-    private void validateUsernameFormat(String userName) throws Exception {
+    public ExternalIdFormatValidator(String userName) {
+		
+		this.userName = userName;
+	}
+	private void validateUsernameFormat(String userName) throws Exception {
         Pattern p = Pattern.compile(userNamePattern);
         Matcher m = p.matcher(userName);
         if(!m.matches()){
@@ -16,23 +20,12 @@ public class ExternalIdFormatValidator extends Validator {
         }
     }
     @Override
-    public void validateEntity(Object entity) throws Exception {
+    public void validateEntity() throws Exception {
         try{
             validateUsernameFormat(userName);
         }catch(Exception e){
-            throw new Exception("Inavlid Username Provided");
+            throw new Exception("Inavlid Username Provided: "+userName);
         }
     }
-
-    @Override
-    protected void checkType(Object entity) throws Exception {
-        if(!(entity instanceof String)){
-            throw new Exception("Username is not of valid type");
-        }
-    }
-
-    @Override
-    protected void setValue(Object entity) {
-        userName = (String)entity;
-    }
+  
 }
