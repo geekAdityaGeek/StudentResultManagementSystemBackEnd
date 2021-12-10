@@ -84,26 +84,28 @@ public class MarksService {
         return new PagingMarksVO(pageable.getPageNumber(), marksList.getTotalPages(), pageable.getPageSize(), marksVOList);
     }
 
-    public List<MarksVO> updateMarksQueryResult(List<MarksVO> marksVO) throws ParseException {
+    public List<MarksVO> updateMarksQueryResult(List<MarksVO> marksVO, String extId) throws ParseException {
         List<MarksVO> marksVOList = new ArrayList<>();
         for (MarksVO marksVO1 : marksVO) {
             String operationType = marksVO1.getOperation();
             User user = userService.getUserByExtId(marksVO1.getRollNo());
+            User moderator = userService.getUserByExtId(extId);
             Subject subject = subjectRepository.findBySubCode(marksVO1.getSubjectCode());
             Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, marksVO1.getTerm(), marksVO1.getYear());
             if(Operation.DELETE.getName().equals(operationType)) {
-                MarksVO temp = performSoftDelete(mark, marksVO1, subject);
+                MarksVO temp = performSoftDelete(mark, marksVO1, subject, moderator);
                 marksVOList.add(temp);
             }else if(Operation.UPDATE.getName().equals(operationType)) {
-                MarksVO temp = performUpdate(mark, marksVO1, subject);
+                MarksVO temp = performUpdate(mark, marksVO1, subject, moderator);
                 marksVOList.add(temp);
             }
         }
         return marksVOList;
     }
 
-    public MarksVO performSoftDelete(Marks mark, MarksVO marksVO, Subject subject){
+    public MarksVO performSoftDelete(Marks mark, MarksVO marksVO, Subject subject, User moderator){
         mark.setStatus("INACTIVE");
+        mark.setModifiedBy(moderator);
         mark = repository.save(mark);
         MarksVO temp = new MarksVO(marksVO.getRollNo(), subject.getSubCode(), subject.getName(),
                 marksVO.getYear(), marksVO.getTerm(), mark.getTotScore(),
@@ -112,10 +114,11 @@ public class MarksService {
         return temp;
     }
 
-    public MarksVO performUpdate(Marks mark, MarksVO markVO, Subject subject){
+    public MarksVO performUpdate(Marks mark, MarksVO markVO, Subject subject, User moderator){
         mark.setScore(markVO.getMarksObtained());
         mark.setGrade(markVO.getGrade());
         mark.setTotScore(markVO.getTotalMarks());
+        mark.setModifiedBy(moderator);
         mark = repository.save(mark);
         MarksVO temp = new MarksVO(markVO.getRollNo(), subject.getSubCode(), subject.getName(),
                 markVO.getYear(), markVO.getTerm(), mark.getTotScore(), mark.getScore(), mark.getGrade(),

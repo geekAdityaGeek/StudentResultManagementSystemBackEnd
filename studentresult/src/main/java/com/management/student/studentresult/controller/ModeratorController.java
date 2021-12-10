@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.management.student.studentresult.service.ModeratorService;
@@ -30,6 +31,8 @@ public class ModeratorController {
 
 	@Autowired
 	private MarksService marksService;
+
+	String externalId;
 
 	@RequestMapping(value = "/bulkUpload", method = RequestMethod.POST)
 	public ResponseEntity<?> marksBulkUpload(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpl,
@@ -99,14 +102,19 @@ public class ModeratorController {
 
 	@RequestMapping(value = "/updateMarks", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> updateMarks(@RequestBody List<MarksVO> marksVO) {
+	public ResponseEntity<?> updateMarks(@RequestBody List<MarksVO> marksVO, @RequestParam(name = "extId") String extId) {
 		List<MarksVO> response;
 		try {
-			response = marksService.updateMarksQueryResult(marksVO);
+			response = marksService.updateMarksQueryResult(marksVO, extId);
 		} catch (Exception ex) {
 			String res = ex.getMessage();
 			return new ResponseEntity<String>(res, HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<List<MarksVO>>(response, HttpStatus.ACCEPTED);
+	}
+
+	@RequestMapping(value = "/extId", method = RequestMethod.GET)
+	public void getExtId(@RequestParam(name = "extId") String extId) {
+		externalId = extId;
 	}
 }
