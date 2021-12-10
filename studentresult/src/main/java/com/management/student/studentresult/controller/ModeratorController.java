@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.management.student.studentresult.service.ModeratorService;
@@ -31,6 +32,8 @@ public class ModeratorController {
 	@Autowired
 	private MarksService marksService;
 
+	String externalId;
+
 	@RequestMapping(value = "/bulkUpload", method = RequestMethod.POST)
 	public ResponseEntity<?> marksBulkUpload(@RequestParam(name = "file", required = true) MultipartFile fileMarksUpl,
 			@RequestParam(name = "extId") String modExitId) {
@@ -45,7 +48,7 @@ public class ModeratorController {
 		return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/getUniqueTerms", method = RequestMethod.GET)
+	@RequestMapping(value = "/uniqueTerms", method = RequestMethod.GET)
 	public ResponseEntity<?> uniqueTerms() {
 		List<String> response;
 		try {
@@ -57,7 +60,7 @@ public class ModeratorController {
 		return new ResponseEntity<List<String>>(response, HttpStatus.ACCEPTED);
 	}
 
-	@RequestMapping(value = "/getListSubjCodeName", method = RequestMethod.GET)
+	@RequestMapping(value = "/listOfSubjCodeName", method = RequestMethod.GET)
 	public ResponseEntity<?> subjCodeName() {
 		List<String> response;
 		try {
@@ -99,14 +102,15 @@ public class ModeratorController {
 
 	@RequestMapping(value = "/updateMarks", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> updateMarks(@RequestBody List<MarksVO> marksVO) {
+	public ResponseEntity<?> updateMarks(@RequestBody List<MarksVO> marksVO, @RequestParam(name = "extId") String extId) {
 		List<MarksVO> response;
 		try {
-			response = marksService.updateMarksQueryResult(marksVO);
+			response = marksService.updateMarksQueryResult(marksVO, extId);
 		} catch (Exception ex) {
 			String res = ex.getMessage();
 			return new ResponseEntity<String>(res, HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<List<MarksVO>>(response, HttpStatus.ACCEPTED);
 	}
+	
 }

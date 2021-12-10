@@ -33,7 +33,7 @@ public class ObjectionController {
     @Autowired
     private ObjectionService objectionService;
 
-    @RequestMapping(value = "/raiseObjection", method = RequestMethod.POST)
+    @RequestMapping(value = "/raise", method = RequestMethod.POST)
     public ResponseEntity<?> studentRaiseObjection(@RequestBody List<MarksVO> marksVO) {
         List<Objection> objection;
         try {
@@ -45,7 +45,7 @@ public class ObjectionController {
         return new ResponseEntity<List<Objection>>(objection, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/resolveObjection", method = RequestMethod.POST)
+    @RequestMapping(value = "/resolution", method = RequestMethod.POST)
     public ResponseEntity<?> resolveRaisedObjection(@RequestBody List<ObjectionVO> objectionVOS) {
         List<ObjectionVO> objection;
         try {

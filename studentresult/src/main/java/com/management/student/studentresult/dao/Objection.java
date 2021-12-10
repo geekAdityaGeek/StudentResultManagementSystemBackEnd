@@ -12,9 +12,6 @@ public class Objection {
     @GeneratedValue
     @Column(name = "obj_id")
     private int objId;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
     @OneToOne
     @JoinColumn(name = "mrk_id")
     private Marks marks;
@@ -44,8 +41,7 @@ public class Objection {
         this.modifiedAt = new Date();
     }
 
-    public Objection(User user, Marks marks) {
-        this.user = user;
+    public Objection(Marks marks) {
         this.marks = marks;
     }
 
@@ -58,14 +54,6 @@ public class Objection {
 
     public void setObjId(int objId) {
         this.objId = objId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Marks getMarks() {

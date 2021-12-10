@@ -32,19 +32,30 @@ public class ObjectionService {
     @Autowired
     MarksRepository repository;
 
-    public List<Objection> raiseObjection(List<MarksVO> marksVOList){
+    public List<Objection> raiseObjection(List<MarksVO> marksVOList) throws Exception {
         List<Objection> objectionList = new ArrayList<>();
-        for(MarksVO marksVO : marksVOList) {
+        for (MarksVO marksVO : marksVOList) {
             Objection objection = new Objection();
             User user = userService.getUserByExtId(marksVO.getRollNo());
             objection.setCreatedBy(user);
             Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
             Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, marksVO.getTerm(), marksVO.getYear());
+            if (checkIfObjectionExists(mark))
+                throw new Exception("Student has already raised the exception for this mark record!");
             objection.setMarks(mark);
+            if (mark.getModifiedBy() != null)
+                objection.setResolverId(mark.getModifiedBy());
             objectionRepository.save(objection);
             String response = "Objection raised Successfullly";
         }
         return objectionList;
+    }
+
+    public boolean checkIfObjectionExists(Marks mark) {
+        Objection objection = objectionRepository.findByMarks(mark);
+        if (objection == null)
+            return false;
+        return true;
     }
 
     public List<ObjectionVO> resolveObjection(List<ObjectionVO> objectionVOS) {
@@ -56,7 +67,7 @@ public class ObjectionService {
             User moderator = userService.getUserById(mark.getCreatedBy().getUserId());
             Objection obj = objectionRepository.findByMarks(mark);
             obj.setComment(objection.getComments());
-            obj.setResolverId(mark.getCreatedBy());
+            //obj.setResolverId(mark.getCreatedBy());
             if (objection.getOperation().equals("RESOLVED"))
                 obj.setStatus("RESOLVED");
             else
