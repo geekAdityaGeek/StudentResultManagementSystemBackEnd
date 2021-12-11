@@ -9,6 +9,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.management.student.studentresult.dao.Subject;
+import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.validator.DateValidator;
 import com.management.student.studentresult.validator.EmailFormatValidator;
 import com.management.student.studentresult.validator.ExternalIdFormatValidator;
@@ -67,9 +69,11 @@ public class ValidatorUtils {
 		int totalMarks;
 		Double marksObtained;
 		String grade;
+		User user;
+		Subject subject;
 
 		public ValidationFields(String extId, int year, int term, String subjCode, int totalMarks, Double marksObtained,
-				String grade) {
+				String grade, User user, Subject subject) {
 			super();
 			this.extId = extId;
 			this.year = year;
@@ -78,6 +82,8 @@ public class ValidatorUtils {
 			this.totalMarks = totalMarks;
 			this.marksObtained = marksObtained;
 			this.grade = grade;
+			this.user = user;
+			this.subject = subject;
 		}
 
 	}
@@ -149,6 +155,14 @@ public class ValidatorUtils {
 				} else {
 					temp = temp.addNext(marksValueValidator);
 				}
+				break;
+			}
+			case "MARKS_EXISTS_VALIDATOR" : {
+				marksExistsValidator.setSubject(entity.subject);
+				marksExistsValidator.setUser(entity.user);
+				marksExistsValidator.setTerm(entity.term);
+				marksExistsValidator.setYear(entity.year);
+				
 				break;
 			}
 			default:
