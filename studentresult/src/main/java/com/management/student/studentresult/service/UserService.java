@@ -16,7 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +60,8 @@ public class UserService implements UserDetailsService{
         userDetails.setAddress(user.getAddress());
         userDetails.setContactno(user.getPhone());
         userDetails.setEmail(user.getAuth().getEmail());
-
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        userDetails.setDob(format.format(user.getDob()));
         return userDetails;
     }
     
@@ -75,7 +77,9 @@ public class UserService implements UserDetailsService{
 			Auth auth = new Auth(userDetails.getEmail(), userDetails.getPassword());
 			auth=authService.saveAuth(auth);
 			Role role = roleService.getRoleByName(userDetails.getRole());
-			User user = new User(auth, role, userDetails.getExtId(), userDetails.getName(), userDetails.getAddress(), userDetails.getContactno(), userDetails.getDob());
+			
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+			User user = new User(auth, role, userDetails.getExtId(), userDetails.getName(), userDetails.getAddress(), userDetails.getContactno(), format.parse(userDetails.getDob()));
 			saveUser(user);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
