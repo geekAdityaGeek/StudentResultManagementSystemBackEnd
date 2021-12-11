@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 public class ExternalIdFormatValidator extends Validator {
 
+
     private static final String userNamePattern= "(IMT|MT|PH|DT|MOD)[0-9]{7}";
     private String userName;
 
@@ -13,6 +14,7 @@ public class ExternalIdFormatValidator extends Validator {
 		this.userName = userName;
 	}
 	private void validateUsernameFormat(String userName) throws Exception {
+
         Pattern p = Pattern.compile(userNamePattern);
         Matcher m = p.matcher(userName);
         if(!m.matches()){
@@ -20,6 +22,7 @@ public class ExternalIdFormatValidator extends Validator {
         }
     }
     @Override
+
     public void validateEntity() throws Exception {
         try{
             validateUsernameFormat(userName);
@@ -27,5 +30,6 @@ public class ExternalIdFormatValidator extends Validator {
             throw new Exception("Inavlid Username Provided: "+userName);
         }
     }
-  
+
+
 }
