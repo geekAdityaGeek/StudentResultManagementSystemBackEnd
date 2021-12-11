@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.management.student.studentresult.validator.ContactNumberFormatValidator;
 import com.management.student.studentresult.validator.ContactNumberValidator;
+import com.management.student.studentresult.dao.Subject;
+import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.validator.DateValidator;
 import com.management.student.studentresult.validator.EmailExistsValidator;
 import com.management.student.studentresult.validator.EmailFormatValidator;
@@ -88,8 +90,11 @@ public class ValidatorUtils {
 		String email;
 		String contactno;
 		Date date;
+		User user;
+		Subject subject;
+
 		public ValidationFields(String extId, int year, int term, String subjCode, int totalMarks, Double marksObtained,
-				String grade) {
+				String grade, User user, Subject subject) {
 			super();
 			this.extId = extId;
 			this.year = year;
@@ -98,6 +103,8 @@ public class ValidatorUtils {
 			this.totalMarks = totalMarks;
 			this.marksObtained = marksObtained;
 			this.grade = grade;
+			this.user = user;
+			this.subject = subject;
 		}
 		
 		public ValidationFields(String extId, String email, String contactno, Date date) {
@@ -238,6 +245,14 @@ public class ValidatorUtils {
 				} else {
 					temp = temp.addNext(dateValidator);
 				}
+				break;
+			}
+			case "MARKS_EXISTS_VALIDATOR" : {
+				marksExistsValidator.setSubject(entity.subject);
+				marksExistsValidator.setUser(entity.user);
+				marksExistsValidator.setTerm(entity.term);
+				marksExistsValidator.setYear(entity.year);
+				
 				break;
 			}
 			default:

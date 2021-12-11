@@ -47,7 +47,7 @@ public class ModeratorService {
 
 	@Autowired
 	private MarksRepository marksRepository;
-	
+
 	@Autowired
 	private ValidatorUtils validatorUtils;
 
@@ -68,7 +68,7 @@ public class ModeratorService {
 			ValidatorUtils.ValidationFields validationFields = new ValidatorUtils.ValidationFields(
 					FileField.marksVO.getRollNo(), FileField.marksVO.getYear(), FileField.marksVO.getTerm(),
 					FileField.marksVO.getSubjectCode(), FileField.marksVO.getTotalMarks(),
-					FileField.marksVO.getMarksObtained(), FileField.marksVO.getGrade());
+					FileField.marksVO.getMarksObtained(), FileField.marksVO.getGrade(), null, null);
 			Validator validator = validatorUtils.validateChain(operation + "_VALIDATIONS", validationFields);
 			validator.validate();
 			User student = userRepository.findByExtId(FileField.marksVO.getRollNo());
@@ -101,35 +101,22 @@ public class ModeratorService {
 
 	public String marksSingleUpload(MarksVO marksVO, String modExitId) throws Exception {
 		// TODO Auto-generated method stub
-		boolean checkExistence = findExistence(marksVO.getRollNo(), marksVO.getSubjectCode(), false);
-		if (checkExistence) {
-			User student = userRepository.findByExtId(marksVO.getRollNo());
-			Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
-			User moderator = userRepository.findByExtId(modExitId);
-			Marks marks = new Marks(student, subject, marksVO.getMarksObtained(), marksVO.getTotalMarks(),
-					marksVO.getYear(), marksVO.getTerm(), marksVO.getGrade(), moderator);
-			marksRepository.save(marks);
-		}
+		String operation = "UPLOAD";
+		User student = userRepository.findByExtId(marksVO.getRollNo());
+		Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
+		ValidatorUtils.ValidationFields validationFields = new ValidatorUtils.ValidationFields(
+				FileField.marksVO.getRollNo(), FileField.marksVO.getYear(), FileField.marksVO.getTerm(),
+				FileField.marksVO.getSubjectCode(), FileField.marksVO.getTotalMarks(),
+				FileField.marksVO.getMarksObtained(), FileField.marksVO.getGrade(), student, subject);
+		Validator validator = validatorUtils.validateChain(operation + "_VALIDATIONS", validationFields);
+		validator.validate();
+		User moderator = userRepository.findByExtId(modExitId);
+		Marks marks = new Marks(student, subject, marksVO.getMarksObtained(), marksVO.getTotalMarks(),
+				marksVO.getYear(), marksVO.getTerm(), marksVO.getGrade(), moderator);
+		marksRepository.save(marks);
+
 		String response = "Marks Uploaded Successfullly";
 		return response;
-	}
-
-	private boolean findExistence(String rollNo, String subjectCode, boolean updateFlag) throws Exception {
-		// TODO Auto-generated method stub
-		User student = userRepository.findByExtId(rollNo);
-		Subject subject = subjectRepository.findBySubCode(subjectCode);
-		if (student == null || subject == null) {
-			throw new Exception("Student or Subject not found. Please check and upload.");
-		}
-		if (!student.getRole().getName().equalsIgnoreCase("STUDENT")) {
-			throw new Exception("Student Id is incorrect. Please check.");
-		}
-
-		Marks checkMarkExist = marksRepository.findByUserAndSubject(student, subject);
-		if (checkMarkExist != null && !updateFlag) {
-			throw new Exception("Student found with same subject code. Please check and upload");
-		}
-		return true;
 	}
 
 	public String marksBulkUpdate(MultipartFile fileMarksUpdt, String modExitId) throws Exception {
@@ -137,39 +124,31 @@ public class ModeratorService {
 		String response = "";
 		Iterator<Row> rowItr = readFile(fileMarksUpdt);
 		User moderator = userRepository.findByExtId(modExitId);
+		String operation = "UPDATE";
+		FileField fields = FileFieldGetter.getFields(operation);
 		while (rowItr.hasNext()) {
 			Row row = rowItr.next();
 			if (row.getRowNum() == 0)
 				continue;
-			String rollNo = row.getCell(0).getStringCellValue();
-			Double year = row.getCell(1).getNumericCellValue();
-			Double term = row.getCell(2).getNumericCellValue();
-			String subjectCode = row.getCell(3).getStringCellValue();
-			Double totalMarks = row.getCell(4).getNumericCellValue();
-			Double marksObtained = row.getCell(5).getNumericCellValue();
-			String grade = row.getCell(6).getStringCellValue();
-			boolean checkExistence = findExistence(rollNo, subjectCode, true);
-			if (checkExistence) {
-				User student = userRepository.findByExtId(rollNo);
-				Subject subject = subjectRepository.findBySubCode(subjectCode);
-				Marks mark = marksRepository.findByUserAndSubjectAndTermAndYear(student, subject, term.intValue(),
-						year.intValue());
-				if (mark == null) {
-					if (workbook != null)
-						workbook.close();
-					throw new Exception(
-							"No mark exist for a stuent with the given Roll number, Subject Code, Term and Year. Please check and Udate the file.");
-				}
-				mark.setScore(marksObtained);
-				mark.setTotScore(totalMarks.intValue());
-				mark.setGrade(grade);
-				mark.setModifiedBy(moderator);
-				marksRepository.save(mark);
-			}
+			fields.handleNext(FileFormatUtils.getFields(operation), row);
+			User student = userRepository.findByExtId(FileField.marksVO.getRollNo());
+			Subject subject = subjectRepository.findBySubCode(FileField.marksVO.getSubjectCode());
+			ValidatorUtils.ValidationFields validationFields = new ValidatorUtils.ValidationFields(
+					FileField.marksVO.getRollNo(), FileField.marksVO.getYear(), FileField.marksVO.getTerm(),
+					FileField.marksVO.getSubjectCode(), FileField.marksVO.getTotalMarks(),
+					FileField.marksVO.getMarksObtained(), FileField.marksVO.getGrade(), student, subject);
+			Validator validator = validatorUtils.validateChain(operation + "_VALIDATIONS", validationFields);
+			validator.validate();
+			Marks mark = marksRepository.findByUserAndSubjectAndTermAndYear(student, subject,
+					FileField.marksVO.getTerm(), FileField.marksVO.getYear());
+			mark.setScore(FileField.marksVO.getMarksObtained());
+			mark.setTotScore(FileField.marksVO.getTotalMarks());
+			mark.setGrade(FileField.marksVO.getGrade());
+			mark.setModifiedBy(moderator);
+			marksRepository.save(mark);
 		}
-		if (workbook != null)
-			workbook.close();
 		response = "Bulk Update of Marks Successful";
+		closeWorkBook();
 		return response;
 	}
 
