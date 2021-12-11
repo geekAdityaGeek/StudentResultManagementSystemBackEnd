@@ -34,10 +34,10 @@ public class ObjectionController {
     private ObjectionService objectionService;
 
     @RequestMapping(value = "/raiseObjection", method = RequestMethod.POST)
-    public ResponseEntity<?> studentRaiseObjection(@RequestBody List<MarksVO> marksVO) {
+    public ResponseEntity<?> studentRaiseObjection(@RequestBody String extId, List<MarksVO> marksVO) {
         List<Objection> objection;
         try {
-            objection = objectionService.raiseObjection(marksVO);
+            objection = objectionService.raiseObjection(extId, marksVO);
         } catch (Exception ex) {
             String res = ex.getMessage();
             return new ResponseEntity<String>(res, HttpStatus.NOT_FOUND);
@@ -46,10 +46,10 @@ public class ObjectionController {
     }
 
     @RequestMapping(value = "/resolveObjection", method = RequestMethod.POST)
-    public ResponseEntity<?> resolveRaisedObjection(@RequestBody List<ObjectionVO> objectionVOS) {
+    public ResponseEntity<?> resolveRaisedObjection(@RequestBody String extId, List<ObjectionVO> objectionVOS) {
         List<ObjectionVO> objection;
         try {
-            objection = objectionService.resolveObjection(objectionVOS);
+            objection = objectionService.resolveObjection(extId, objectionVOS);
         } catch (Exception ex) {
             String res = ex.getMessage();
             return new ResponseEntity<String>(res, HttpStatus.NOT_FOUND);
@@ -58,7 +58,7 @@ public class ObjectionController {
     }
 
     @GetMapping("/studentObjections")
-    public ResponseEntity<?> getStudentsObjection(@RequestParam Map<String, String> requestParams) {
+    public ResponseEntity<?> getObjections(@RequestParam Map<String, String> requestParams) {
         PagingObjectionVO response;
         try {
             String extId = requestParams.get("extId");
@@ -73,21 +73,21 @@ public class ObjectionController {
         return new ResponseEntity<PagingObjectionVO>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/modObjections")
-    public ResponseEntity<?> getModeratorsObjection(@RequestParam Map<String, String> requestParams) {
-        PagingObjectionVO response;
-        try {
-            String extId = requestParams.get("extId");
-            int page = Integer.parseInt(requestParams.get("page"));
-            int items = Integer.parseInt(requestParams.get("items"));
-            Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
-            response = objectionService.getModObjections(extId, pageable);
-        } catch (Exception ex) {
-            String res = ex.getMessage();
-            return new ResponseEntity<String>(res, HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<PagingObjectionVO>(response, HttpStatus.OK);
-    }
+//    @GetMapping("/modObjections")
+//    public ResponseEntity<?> getModeratorsObjection(@RequestParam Map<String, String> requestParams) {
+//        PagingObjectionVO response;
+//        try {
+//            String extId = requestParams.get("extId");
+//            int page = Integer.parseInt(requestParams.get("page"));
+//            int items = Integer.parseInt(requestParams.get("items"));
+//            Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
+//            response = objectionService.getObjections(extId, pageable);
+//        } catch (Exception ex) {
+//            String res = ex.getMessage();
+//            return new ResponseEntity<String>(res, HttpStatus.NOT_FOUND);
+//        }
+//        return new ResponseEntity<PagingObjectionVO>(response, HttpStatus.OK);
+//    }
 
 
 }

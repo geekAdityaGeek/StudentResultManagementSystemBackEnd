@@ -1,10 +1,12 @@
 package com.management.student.studentresult.service;
 
 import com.management.student.studentresult.dao.Marks;
+import com.management.student.studentresult.dao.Objection;
 import com.management.student.studentresult.dao.Subject;
 import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.enums.Operation;
 import com.management.student.studentresult.repository.MarksRepository;
+import com.management.student.studentresult.repository.ObjectionRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
 import com.management.student.studentresult.repository.UserRepository;
 import com.management.student.studentresult.specs.MarksSpecs;
@@ -31,6 +33,8 @@ public class MarksService {
     private UserRepository userRepository;
     @Autowired
     private SubjectRepository subjectRepository;
+    @Autowired
+    private ObjectionRepository objectionRepository;
 
     @Autowired
     private UserService userService;
@@ -102,13 +106,17 @@ public class MarksService {
         return marksVOList;
     }
 
-    public MarksVO performSoftDelete(Marks mark, MarksVO marksVO, Subject subject){
-        mark.setStatus("INACTIVE");
-        mark = repository.save(mark);
+    public MarksVO performSoftDelete(Marks marks, MarksVO marksVO, Subject subject){
+        marks.setStatus("INACTIVE");
+        marks = repository.save(marks);
+        Objection objection = objectionRepository.findByMarks(marks);
+        if(objection != null)
+            objection.setStatus("INACTIVE");
+        objectionRepository.save(objection);
         MarksVO temp = new MarksVO(marksVO.getRollNo(), subject.getSubCode(), subject.getName(),
-                marksVO.getYear(), marksVO.getTerm(), mark.getTotScore(),
-                mark.getScore(), mark.getGrade(),
-                mark.getStatus());
+                marksVO.getYear(), marksVO.getTerm(), marks.getTotScore(),
+                marks.getScore(), marks.getGrade(),
+                marks.getStatus());
         return temp;
     }
 
