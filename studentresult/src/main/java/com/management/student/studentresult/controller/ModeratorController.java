@@ -15,6 +15,7 @@ import com.management.student.studentresult.vo.MarksVO;
 import com.management.student.studentresult.vo.ResponseMessage;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author PRATAP
@@ -99,8 +100,9 @@ public class ModeratorController {
 
 	@RequestMapping(value = "/updateMarks", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<?> updateMarks(@RequestBody List<MarksVO> marksVO) {
+	public ResponseEntity<?> updateMarks(@RequestParam Map<String, String> requestParams, @RequestBody List<MarksVO> marksVO) {
 		List<MarksVO> response;
+		String extId = requestParams.get("extId");
 		try {
 			response = marksService.updateMarksQueryResult(marksVO);
 		} catch (Exception ex) {

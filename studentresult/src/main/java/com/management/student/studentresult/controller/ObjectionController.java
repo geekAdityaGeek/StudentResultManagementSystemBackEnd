@@ -34,8 +34,9 @@ public class ObjectionController {
     private ObjectionService objectionService;
 
     @RequestMapping(value = "/raiseObjection", method = RequestMethod.POST)
-    public ResponseEntity<?> studentRaiseObjection(@RequestBody String extId, List<MarksVO> marksVO) {
+    public ResponseEntity<?> studentRaiseObjection(@RequestParam Map<String, String> requestParams, @RequestBody List<MarksVO> marksVO) {
         List<Objection> objection;
+        String extId = requestParams.get("extId");
         try {
             objection = objectionService.raiseObjection(extId, marksVO);
         } catch (Exception ex) {
@@ -46,8 +47,9 @@ public class ObjectionController {
     }
 
     @RequestMapping(value = "/resolveObjection", method = RequestMethod.POST)
-    public ResponseEntity<?> resolveRaisedObjection(@RequestBody String extId, List<ObjectionVO> objectionVOS) {
+    public ResponseEntity<?> resolveRaisedObjection(@RequestParam Map<String, String> requestParams, @RequestBody List<ObjectionVO> objectionVOS) {
         List<ObjectionVO> objection;
+        String extId = requestParams.get("extId");
         try {
             objection = objectionService.resolveObjection(extId, objectionVOS);
         } catch (Exception ex) {
@@ -57,7 +59,7 @@ public class ObjectionController {
         return new ResponseEntity<List<ObjectionVO>>(objection, HttpStatus.OK);
     }
 
-    @GetMapping("/studentObjections")
+    @GetMapping("/all")
     public ResponseEntity<?> getObjections(@RequestParam Map<String, String> requestParams) {
         PagingObjectionVO response;
         try {

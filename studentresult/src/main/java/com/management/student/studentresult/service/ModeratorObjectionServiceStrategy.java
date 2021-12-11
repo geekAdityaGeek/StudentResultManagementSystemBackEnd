@@ -4,6 +4,7 @@ import com.management.student.studentresult.dao.Marks;
 import com.management.student.studentresult.dao.Objection;
 import com.management.student.studentresult.dao.Subject;
 import com.management.student.studentresult.dao.User;
+import com.management.student.studentresult.enums.Operation;
 import com.management.student.studentresult.repository.MarksRepository;
 import com.management.student.studentresult.repository.ObjectionRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
@@ -48,10 +49,12 @@ public class ModeratorObjectionServiceStrategy implements IObjectionServiceStrat
             Objection obj = objectionRepository.findByMarks(mark);
             obj.setComment(objection.getComments());
             //obj.setResolverId(mark.getCreatedBy());
-            if (objection.getOperation().equals("RESOLVED"))
-                obj.setStatus("RESOLVED");
+            if (Operation.RESOLVE.getName().equals(objection.getOperation()))
+                obj.setStatus(Operation.RESOLVE.getName());
+            else if(Operation.REJECTED.getName().equals(objection.getOperation()))
+                obj.setStatus(Operation.REJECTED.getName());
             else
-                obj.setStatus("REJECTED");
+                throw new Exception("Invalid Operation Performed");
             obj.setModifiedBy(moderator);
             objectionRepository.save(obj);
             objectionVOList.add(objection);
@@ -66,7 +69,7 @@ public class ModeratorObjectionServiceStrategy implements IObjectionServiceStrat
         User user = userService.getUserByExtId(extId);
         Page<Objection> objections = objectionRepository.findAllByResolverId(user, pageable);
         for (Objection objection : objections) {
-            if (objection.getStatus().equals("INACTIVE"))
+            if (!"ACTIVE".equals(objection.getStatus()))
                 continue;
             ObjectionVO objectionVO = new ObjectionVO();
             Subject subject = subjectRepository.findBySubCode(objection.getMarks().getSubject().getSubCode());

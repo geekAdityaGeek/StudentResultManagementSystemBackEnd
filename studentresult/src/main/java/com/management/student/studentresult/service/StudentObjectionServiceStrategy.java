@@ -39,12 +39,11 @@ public class StudentObjectionServiceStrategy implements IObjectionServiceStrateg
             Objection objection = new Objection();
             User user = userService.getUserByExtId(marksVO.getRollNo());
             objection.setCreatedBy(user);
+            objection.setStatus("ACTIVE");
             Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
-
             Marks mark = repository.findByUserAndSubjectAndTermAndYearAndStatus(user, subject, marksVO.getTerm(), marksVO.getYear(), "ACTIVE");
             if (checkIfObjectionExists(mark))
                 throw new Exception("Student has already raised the exception for this mark record!");
-
             objection.setMarks(mark);
             if (mark.getModifiedBy() != null) {
                 objection.setResolverId(mark.getModifiedBy());

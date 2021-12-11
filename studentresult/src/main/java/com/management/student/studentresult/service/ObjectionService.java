@@ -2,6 +2,7 @@ package com.management.student.studentresult.service;
 
 import com.management.student.studentresult.dao.*;
 import com.management.student.studentresult.enums.Operation;
+import com.management.student.studentresult.enums.UserRole;
 import com.management.student.studentresult.repository.MarksRepository;
 import com.management.student.studentresult.repository.ObjectionRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
@@ -22,30 +23,27 @@ import java.util.List;
 public class ObjectionService {
 
     @Autowired
-    ObjectionRepository objectionRepository;
+    private UserService userService;
+
     @Autowired
-    UserService userService;
+    private StudentObjectionServiceStrategy studentObjectionServiceStrategy;
+
     @Autowired
-    SubjectRepository subjectRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    MarksRepository repository;
+    private ModeratorObjectionServiceStrategy moderatorObjectionServiceStrategy;
 
 
-    public IObjectionServiceStrategy getUserType(String extId){
-        IObjectionServiceStrategy userObj;
-        if(userService.getUserByExtId(extId).getRole().equals("STUDENT"))
-            userObj = new StudentObjectionServiceStrategy();
+    public IObjectionServiceStrategy getUserType(String extId) throws Exception {
+        IObjectionServiceStrategy userObj = null;
+        if(UserRole.STUDENT.getName().equals(userService.getUserByExtId(extId).getRole().getName()))
+            userObj = studentObjectionServiceStrategy;
+        else if (UserRole.MODERATOR.getName().equals(userService.getUserByExtId(extId).getRole().getName()))
+            userObj = moderatorObjectionServiceStrategy;
         else
-            userObj = new ModeratorObjectionServiceStrategy();
-
+            throw new Exception("Invalid role for the user");
         return userObj;
     }
 
-
     public List<Objection> raiseObjection(String extId, List<MarksVO> marksVOList) throws Exception{
-
         IObjectionServiceStrategy userStrategy = getUserType(extId);
         List<Objection> objectionList = userStrategy.raiseObjection(extId, marksVOList);
         return objectionList;
