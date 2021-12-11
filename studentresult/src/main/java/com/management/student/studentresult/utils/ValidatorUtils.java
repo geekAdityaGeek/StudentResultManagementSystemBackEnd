@@ -3,17 +3,22 @@
  */
 package com.management.student.studentresult.utils;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.management.student.studentresult.validator.ContactNumberFormatValidator;
+import com.management.student.studentresult.validator.ContactNumberValidator;
 import com.management.student.studentresult.dao.Subject;
 import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.validator.DateValidator;
+import com.management.student.studentresult.validator.EmailExistsValidator;
 import com.management.student.studentresult.validator.EmailFormatValidator;
 import com.management.student.studentresult.validator.ExternalIdFormatValidator;
+import com.management.student.studentresult.validator.ExternalIdNotExistsValidator;
 import com.management.student.studentresult.validator.MarksExistsValidator;
 import com.management.student.studentresult.validator.MarksValueValidator;
 import com.management.student.studentresult.validator.ModeratorExistsValidator;
@@ -59,6 +64,19 @@ public class ValidatorUtils {
 
 	@Autowired
 	private YearValidator yearValidator;
+	
+	@Autowired
+	private ContactNumberFormatValidator contactformatvalidator;
+	
+	@Autowired
+	private ContactNumberValidator contactvalidator;
+	
+	@Autowired
+	private EmailExistsValidator emailexistsvalidator;
+	
+	@Autowired
+	private ExternalIdNotExistsValidator extidnotexistsvalidator;
+	
 
 	public static class ValidationFields {
 
@@ -69,6 +87,9 @@ public class ValidatorUtils {
 		int totalMarks;
 		Double marksObtained;
 		String grade;
+		String email;
+		String contactno;
+		Date date;
 		User user;
 		Subject subject;
 
@@ -85,7 +106,16 @@ public class ValidatorUtils {
 			this.user = user;
 			this.subject = subject;
 		}
-
+		
+		public ValidationFields(String extId, String email, String contactno, Date date) {
+			super();
+			this.extId = extId;
+			this.email = email;
+			this.contactno = contactno;
+			this.date = date;
+		}
+		
+		
 	}
 
 	public Validator validateChain(String operation, ValidationFields entity) throws Exception {
@@ -154,6 +184,66 @@ public class ValidatorUtils {
 					temp = validate;
 				} else {
 					temp = temp.addNext(marksValueValidator);
+				}
+				break;
+			}			
+			case "CONTACT_FORMAT_VALIDATOR":{
+				contactformatvalidator.setContactno(entity.contactno);
+				if (validate == null) {
+					validate = contactformatvalidator;
+					temp = validate;
+				} else {
+					temp = temp.addNext(contactformatvalidator);
+				}
+				break;
+			}
+			case "CONTACT_EXISTS_VALIDATOR":{
+				contactvalidator.setContact(entity.contactno);
+				if (validate == null) {
+					validate = contactvalidator;
+					temp = validate;
+				} else {
+					temp = temp.addNext(contactvalidator);
+				}
+				break;
+			}
+			case "EMAIL_FORMAT_VALIDATOR":{
+				emailFormatValidator.setEmail(entity.email);
+				if (validate == null) {
+					validate = emailFormatValidator;
+					temp = validate;
+				} else {
+					temp = temp.addNext(emailFormatValidator);
+				}
+				break;
+			}
+			case "EMAIL_EXISTS_VALIDATOR":{
+				emailexistsvalidator.setEmail(entity.email);
+				if (validate == null) {
+					validate = emailexistsvalidator;
+					temp = validate;
+				} else {
+					temp = temp.addNext(emailexistsvalidator);
+				}
+				break;
+			}
+			case "EXTID_NOT_EXITS_VALIDATOR":{
+				extidnotexistsvalidator.setExtId(entity.extId);
+				if (validate == null) {
+					validate = extidnotexistsvalidator;
+					temp = validate;
+				} else {
+					temp = temp.addNext(extidnotexistsvalidator);
+				}
+				break;
+			}
+			case "DATE_VALIDATOR":{
+				dateValidator.setDate(entity.date);
+				if (validate == null) {
+					validate = dateValidator;
+					temp = validate;
+				} else {
+					temp = temp.addNext(dateValidator);
 				}
 				break;
 			}

@@ -29,6 +29,7 @@ public class UserController {
 
     @PostMapping("/register")
     public @ResponseBody ResponseEntity<ResponseMessage> registerUser(@RequestBody UserDetails userDetails){
+    	System.out.println("Registration started!");
     	return userService.registrationService(userDetails);
     }
 
