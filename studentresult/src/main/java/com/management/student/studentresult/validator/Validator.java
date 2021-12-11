@@ -4,8 +4,9 @@ public abstract class Validator implements ValidatorChain {
     private Validator nextValidator;
 
     public abstract void validateEntity() throws Exception;
-    public void addNext(Validator validator){
+    public Validator addNext(Validator validator){
         this.nextValidator = validator;
+        return this.nextValidator;
     }
     @Override
     public void validate() throws Exception {
