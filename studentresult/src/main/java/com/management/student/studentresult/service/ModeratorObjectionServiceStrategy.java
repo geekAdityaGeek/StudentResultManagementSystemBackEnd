@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class StudentObjectionServiceStrategy implements IObjectionServiceStrategy{
+public class ModeratorObjectionServiceStrategy implements IObjectionServiceStrategy{
     @Autowired
     ObjectionRepository objectionRepository;
     @Autowired
@@ -33,43 +33,44 @@ public class StudentObjectionServiceStrategy implements IObjectionServiceStrateg
     MarksRepository repository;
 
     @Override
-    public List<Objection> raiseObjection(String extId,List<MarksVO> marksVOList) throws Exception {
-        List<Objection> objectionList = new ArrayList<>();
-        for (MarksVO marksVO : marksVOList) {
-            Objection objection = new Objection();
-            User user = userService.getUserByExtId(marksVO.getRollNo());
-            objection.setCreatedBy(user);
-            Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
-
-            Marks mark = repository.findByUserAndSubjectAndTermAndYearAndStatus(user, subject, marksVO.getTerm(), marksVO.getYear(), "ACTIVE");
-            if (checkIfObjectionExists(mark))
-                throw new Exception("Student has already raised the exception for this mark record!");
-
-            objection.setMarks(mark);
-            if (mark.getModifiedBy() != null) {
-                objection.setResolverId(mark.getModifiedBy());
-                objection.setModifiedBy(user);
-            }
-            objectionRepository.save(objection);
-            String response = "Objection raised Successfullly";
-        }
-        return objectionList;
+    public List<Objection> raiseObjection(String extId, List<MarksVO> marksVOList) throws Exception {
+        throw new Exception("Moderator not allowed to raise objection");
     }
 
     @Override
     public List<ObjectionVO> resolveObjection(String extId, List<ObjectionVO> objectionVOS) throws Exception {
-        throw new Exception("Student not allowed to resolve exception");
+        List<ObjectionVO> objectionVOList = new ArrayList<>();
+        User moderator = userService.getUserByExtId(extId);
+        for (ObjectionVO objection : objectionVOS) {
+            User user = userService.getUserByExtId(objection.getRollNo());
+            Subject subject = subjectRepository.findBySubCode(objection.getSubjectCode());
+            Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, objection.getTerm(), objection.getYear());
+            Objection obj = objectionRepository.findByMarks(mark);
+            obj.setComment(objection.getComments());
+            //obj.setResolverId(mark.getCreatedBy());
+            if (objection.getOperation().equals("RESOLVED"))
+                obj.setStatus("RESOLVED");
+            else
+                obj.setStatus("REJECTED");
+            obj.setModifiedBy(moderator);
+            objectionRepository.save(obj);
+            objectionVOList.add(objection);
+
+        }
+        return objectionVOList;
     }
 
     @Override
     public PagingObjectionVO getObjections(String extId, Pageable pageable){
         List<ObjectionVO> objectionVOList = new ArrayList<>();
         User user = userService.getUserByExtId(extId);
-        Page<Objection> objections = objectionRepository.findAllByCreatedBy(user, pageable);
+        Page<Objection> objections = objectionRepository.findAllByResolverId(user, pageable);
         for (Objection objection : objections) {
-            if(objection.getStatus().equals("INACTIVE"))
+            if (objection.getStatus().equals("INACTIVE"))
                 continue;
             ObjectionVO objectionVO = new ObjectionVO();
+            Subject subject = subjectRepository.findBySubCode(objection.getMarks().getSubject().getSubCode());
+            Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, objection.getMarks().getTerm(), objection.getMarks().getYear());
             objectionVO.setComments(objection.getComment());
             objectionVO.setOperation(objection.getStatus());
             objectionVO.setGrade(objection.getMarks().getGrade());
@@ -84,12 +85,6 @@ public class StudentObjectionServiceStrategy implements IObjectionServiceStrateg
         }
 
         return new PagingObjectionVO(pageable.getPageNumber(), objections.getTotalPages(), pageable.getPageSize(), objectionVOList);
-    }
 
-    public boolean checkIfObjectionExists(Marks mark) {
-        Objection objection = objectionRepository.findByMarks(mark);
-        if (objection == null)
-            return false;
-        return true;
     }
 }

@@ -9,8 +9,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface IObjectionServiceStrategy {
-    public List<Objection> raiseObjection(List<MarksVO> marksVOList) throws Exception;
-    public List<ObjectionVO> resolveObjection(List<ObjectionVO> objectionVOS) throws Exception;
+    public List<Objection> raiseObjection(String extId, List<MarksVO> marksVOList) throws Exception;
+    public List<ObjectionVO> resolveObjection(String extId, List<ObjectionVO> objectionVOS) throws Exception;
     public PagingObjectionVO getObjections(String extId, Pageable pageable) throws Exception;
 
 }
