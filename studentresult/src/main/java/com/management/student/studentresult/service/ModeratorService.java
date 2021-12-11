@@ -3,6 +3,7 @@
  */
 package com.management.student.studentresult.service;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
@@ -19,9 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.management.student.studentresult.dao.Marks;
 import com.management.student.studentresult.dao.Subject;
 import com.management.student.studentresult.dao.User;
+import com.management.student.studentresult.file_utils.FileField;
 import com.management.student.studentresult.repository.MarksRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
 import com.management.student.studentresult.repository.UserRepository;
+import com.management.student.studentresult.utils.FileFieldGetter;
+import com.management.student.studentresult.utils.FileFormatUtils;
+import com.management.student.studentresult.utils.ValidatorUtils;
+import com.management.student.studentresult.validator.Validator;
 import com.management.student.studentresult.vo.MarksVO;
 
 /**
@@ -41,42 +47,46 @@ public class ModeratorService {
 
 	@Autowired
 	private MarksRepository marksRepository;
+	
+	@Autowired
+	private ValidatorUtils validatorUtils;
+
+	private XSSFWorkbook workbook;
 
 	public String marksBulkUpload(MultipartFile fileMarksUpl, String modExitId) throws Exception {
 		// TODO Auto-generated method stub
 		String response = "";
-		XSSFWorkbook workbook = null;
-		InputStream stream = fileMarksUpl.getInputStream();
-		workbook = new XSSFWorkbook(stream);
-		XSSFSheet sheet = workbook.getSheetAt(0);
-		Iterator<Row> rowItr = sheet.iterator();
+		Iterator<Row> rowItr = readFile(fileMarksUpl);
 		User moderator = userRepository.findByExtId(modExitId);
+		String operation = "UPLOAD";
+		FileField fields = FileFieldGetter.getFields(operation);
 		while (rowItr.hasNext()) {
 			Row row = rowItr.next();
 			if (row.getRowNum() == 0)
 				continue;
-			String rollNo = row.getCell(0).getStringCellValue();
-			Double year = row.getCell(1).getNumericCellValue();
-			Double term = row.getCell(2).getNumericCellValue();
-			String subjectCode = row.getCell(3).getStringCellValue();
-			Double totalMarks = row.getCell(4).getNumericCellValue();
-			Double marksObtained = row.getCell(5).getNumericCellValue();
-			String grade = row.getCell(6).getStringCellValue();
-			User student = userRepository.findByExtId(rollNo);
-			Subject subject = subjectRepository.findBySubCode(subjectCode);
-			boolean checkExistence = findExistence(rollNo, subjectCode, false);
-			if (checkExistence) {
-				Marks mark = new Marks(student, subject, marksObtained, totalMarks.intValue(), year.intValue(),
-						term.intValue(), grade, moderator);
-				marksRepository.save(mark);
-			}
+			fields.handleNext(FileFormatUtils.getFields(operation), row);
+			ValidatorUtils.ValidationFields validationFields = new ValidatorUtils.ValidationFields(
+					FileField.marksVO.getRollNo(), FileField.marksVO.getYear(), FileField.marksVO.getTerm(),
+					FileField.marksVO.getSubjectCode(), FileField.marksVO.getTotalMarks(),
+					FileField.marksVO.getMarksObtained(), FileField.marksVO.getGrade());
+			Validator validator = validatorUtils.validateChain(operation + "_VALIDATIONS", validationFields);
+			validator.validate();
+			User student = userRepository.findByExtId(FileField.marksVO.getRollNo());
+			Subject subject = subjectRepository.findBySubCode(FileField.marksVO.getSubjectCode());
+			Marks mark = new Marks(student, subject, FileField.marksVO.getMarksObtained(),
+					FileField.marksVO.getTotalMarks(), FileField.marksVO.getYear(), FileField.marksVO.getTerm(),
+					FileField.marksVO.getGrade(), moderator);
+			marksRepository.save(mark);
 		}
 		response = "Marks successfully uploaded";
+		closeWorkBook();
+		return response;
+	}
 
+	private void closeWorkBook() throws IOException {
+		// TODO Auto-generated method stub
 		if (workbook != null)
 			workbook.close();
-
-		return response;
 	}
 
 	public List<String> getTerms() {
@@ -125,11 +135,7 @@ public class ModeratorService {
 	public String marksBulkUpdate(MultipartFile fileMarksUpdt, String modExitId) throws Exception {
 		// TODO Auto-generated method stub
 		String response = "";
-		XSSFWorkbook workbook = null;
-		InputStream stream = fileMarksUpdt.getInputStream();
-		workbook = new XSSFWorkbook(stream);
-		XSSFSheet sheet = workbook.getSheetAt(0);
-		Iterator<Row> rowItr = sheet.iterator();
+		Iterator<Row> rowItr = readFile(fileMarksUpdt);
 		User moderator = userRepository.findByExtId(modExitId);
 		while (rowItr.hasNext()) {
 			Row row = rowItr.next();
@@ -165,5 +171,13 @@ public class ModeratorService {
 			workbook.close();
 		response = "Bulk Update of Marks Successful";
 		return response;
+	}
+
+	public Iterator<Row> readFile(MultipartFile file) throws IOException {
+		workbook = null;
+		InputStream stream = file.getInputStream();
+		workbook = new XSSFWorkbook(stream);
+		XSSFSheet sheet = workbook.getSheetAt(0);
+		return sheet.iterator();
 	}
 }
