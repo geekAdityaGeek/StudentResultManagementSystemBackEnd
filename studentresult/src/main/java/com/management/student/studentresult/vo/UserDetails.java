@@ -9,7 +9,7 @@ public class UserDetails {
     private String contactno;
     private String role;
     private String extId;
-    private Date dob;
+    private String dob;
     private String address;
     private String email;
     private String password;
@@ -18,7 +18,7 @@ public class UserDetails {
     public UserDetails() {
     }
 
-    public UserDetails(String name, String extId, Date dob, String address, String contactno, String email, String password, int roleId) {
+    public UserDetails(String name, String extId, String dob, String address, String contactno, String email, String password, int roleId) {
         this.name = name;
         this.extId = extId;
         this.dob = dob;
@@ -69,11 +69,11 @@ public class UserDetails {
 		this.extId = extId;
 	}
 
-	public Date getDob() {
+	public String getDob() {
 		return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(String dob) {
 		this.dob = dob;
 	}
 
