@@ -32,16 +32,25 @@ public class ObjectionService {
     @Autowired
     MarksRepository repository;
 
-    public List<Objection> raiseObjection(List<MarksVO> marksVOList) throws Exception {
+
+    public IObjectionServiceStrategy getUserType(){
+        return null;
+    }
+
+
+    public List<Objection> raiseObjection(List<MarksVO> marksVOList) throws Exception{
+
         List<Objection> objectionList = new ArrayList<>();
         for (MarksVO marksVO : marksVOList) {
             Objection objection = new Objection();
             User user = userService.getUserByExtId(marksVO.getRollNo());
             objection.setCreatedBy(user);
             Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
-            Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, marksVO.getTerm(), marksVO.getYear());
+
+            Marks mark = repository.findByUserAndSubjectAndTermAndYearAndStatus(user, subject, marksVO.getTerm(), marksVO.getYear(), "ACTIVE");
             if (checkIfObjectionExists(mark))
                 throw new Exception("Student has already raised the exception for this mark record!");
+
             objection.setMarks(mark);
             if (mark.getModifiedBy() != null)
                 objection.setResolverId(mark.getModifiedBy());
@@ -84,6 +93,8 @@ public class ObjectionService {
         User user = userService.getUserByExtId(extId);
         Page<Objection> objections = objectionRepository.findAllByCreatedBy(user, pageable);
         for (Objection objection : objections) {
+            if(objection.getStatus().equals("INACTIVE"))
+                continue;
             ObjectionVO objectionVO = new ObjectionVO();
             objectionVO.setComments(objection.getComment());
             objectionVO.setOperation(objection.getStatus());
@@ -106,22 +117,22 @@ public class ObjectionService {
         User user = userService.getUserByExtId(extId);
         Page<Objection> objections = objectionRepository.findAllByResolverId(user, pageable);
         for (Objection objection : objections) {
-            if (objection.getStatus()==null || objection.getStatus().isEmpty()) {
-                ObjectionVO objectionVO = new ObjectionVO();
-                Subject subject = subjectRepository.findBySubCode(objection.getMarks().getSubject().getSubCode());
-                Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, objection.getMarks().getTerm(), objection.getMarks().getYear());
-                objectionVO.setComments(objection.getComment());
-                objectionVO.setOperation(objection.getStatus());
-                objectionVO.setGrade(objection.getMarks().getGrade());
-                objectionVO.setRollNo(objection.getCreatedBy().getExtId());
-                objectionVO.setYear(objection.getMarks().getYear());
-                objectionVO.setTerm(objection.getMarks().getTerm());
-                objectionVO.setSubjectCode(objection.getMarks().getSubject().getSubCode());
-                objectionVO.setTotalMarks(objection.getMarks().getTotScore());
-                objectionVO.setMarksObtained(objection.getMarks().getScore());
-                objectionVO.setSubjectName(objection.getMarks().getSubject().getName());
-                objectionVOList.add(objectionVO);
-            }
+            if (objection.getStatus().equals("INACTIVE"))
+                continue;
+            ObjectionVO objectionVO = new ObjectionVO();
+            Subject subject = subjectRepository.findBySubCode(objection.getMarks().getSubject().getSubCode());
+            Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, objection.getMarks().getTerm(), objection.getMarks().getYear());
+            objectionVO.setComments(objection.getComment());
+            objectionVO.setOperation(objection.getStatus());
+            objectionVO.setGrade(objection.getMarks().getGrade());
+            objectionVO.setRollNo(objection.getCreatedBy().getExtId());
+            objectionVO.setYear(objection.getMarks().getYear());
+            objectionVO.setTerm(objection.getMarks().getTerm());
+            objectionVO.setSubjectCode(objection.getMarks().getSubject().getSubCode());
+            objectionVO.setTotalMarks(objection.getMarks().getTotScore());
+            objectionVO.setMarksObtained(objection.getMarks().getScore());
+            objectionVO.setSubjectName(objection.getMarks().getSubject().getName());
+            objectionVOList.add(objectionVO);
         }
 
         return new PagingObjectionVO(pageable.getPageNumber(), objections.getTotalPages(), pageable.getPageSize(), objectionVOList);
