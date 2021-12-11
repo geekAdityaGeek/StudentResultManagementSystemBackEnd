@@ -3,14 +3,17 @@ package com.management.student.studentresult.validator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ExternalIdFormatValidator extends Validator {
 
 
     private static final String userNamePattern= "(IMT|MT|PH|DT|MOD)[0-9]{7}";
     private String userName;
 
-    public ExternalIdFormatValidator(String userName) {
-		
+    
+	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 	private void validateUsernameFormat(String userName) throws Exception {
