@@ -46,7 +46,7 @@ public class ModeratorController {
 		return new ResponseEntity<ResponseMessage>(respMsg, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/getUniqueTerms", method = RequestMethod.GET)
+	@RequestMapping(value = "/uniqueTerms", method = RequestMethod.GET)
 	public ResponseEntity<?> uniqueTerms() {
 		List<String> response;
 		try {
@@ -58,7 +58,7 @@ public class ModeratorController {
 		return new ResponseEntity<List<String>>(response, HttpStatus.ACCEPTED);
 	}
 
-	@RequestMapping(value = "/getListSubjCodeName", method = RequestMethod.GET)
+	@RequestMapping(value = "/listOfSubjCodeName", method = RequestMethod.GET)
 	public ResponseEntity<?> subjCodeName() {
 		List<String> response;
 		try {

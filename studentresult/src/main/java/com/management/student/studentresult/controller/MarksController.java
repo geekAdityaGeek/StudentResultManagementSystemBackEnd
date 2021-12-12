@@ -28,7 +28,7 @@ public class MarksController {
     @Autowired
     private MarksService marksService;
 
-    @GetMapping("/getMarks/pagination")
+    @GetMapping("/marks/pagination")
     public ResponseEntity<?> queryMarksPagination(@RequestParam Map<String, String> requestParameters){
         try {
             int page = Integer.parseInt(requestParameters.get(HttpFields.REQ_PARAM_PAGE.getName()));
