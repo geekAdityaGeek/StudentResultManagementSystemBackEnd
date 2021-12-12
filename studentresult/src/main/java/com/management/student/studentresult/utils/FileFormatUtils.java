@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.collections4.map.HashedMap;
+import org.springframework.util.ResourceUtils;
 
 /**
  * @author PRATAP
@@ -20,7 +21,8 @@ public class FileFormatUtils {
 	private static Map<String, Map<String, Integer>> map = new HashedMap<String, Map<String, Integer>>();
 
 	public static Map<String, Map<String, Integer>> readFile() throws IOException {
-		File file = new File(Constants.FEILD_CONFIGURATION_FILE);
+		//File file = new File(Constants.FEILD_CONFIGURATION_FILE);
+		File file = ResourceUtils.getFile("classpath:"+Constants.FEILD_CONFIGURATION_FILE);
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
 

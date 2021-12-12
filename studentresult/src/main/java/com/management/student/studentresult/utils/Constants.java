@@ -7,7 +7,7 @@ package com.management.student.studentresult.utils;
 public class Constants {
 
     //Field configuration constants
-    public static final String FEILD_CONFIGURATION_FILE = ".\\FieldsConfiguration.txt";
+    public static final String FEILD_CONFIGURATION_FILE = "FieldsConfiguration.txt";
     public static final String FEILD_CONFIGURATION_KEY_VAL_SEP = "=";
     public static final String FEILD_CONFIGURATION_FIELD_SEP = ":";
 
