@@ -98,11 +98,12 @@ public class MarksService {
         return new PagingMarksVO(pageable.getPageNumber(), marksList.getTotalPages(), pageable.getPageSize(), marksVOList);
     }
 
+
     public List<MarksVO> updateMarksQueryResult(List<MarksVO> marksVO) throws Exception {
         List<MarksVO> marksVOList = new ArrayList<>();
         for (MarksVO marksVO1 : marksVO) {
             String operationType = marksVO1.getOperation();
-            String operation = Constants.FEILD_CONFIGURATION_KEY_UPLOAD_FORMAT;
+            String operation = Constants.FEILD_CONFIGURATION_KEY_UPDATE_VALIDATION;
             User user = userService.getUserByExtId(marksVO1.getRollNo());
             Subject subject = subjectRepository.findBySubCode(marksVO1.getSubjectCode());
             ValidatorUtils.ValidationFields validationFields = new ValidatorUtils.ValidationFields(
@@ -127,9 +128,10 @@ public class MarksService {
         marks.setStatus(Status.INACTIVE.getName());
         marks = repository.save(marks);
         Objection objection = objectionRepository.findByMarks(marks);
-        if(objection != null)
+        if(objection != null) {
             objection.setStatus(Status.INACTIVE.getName());
-        objectionRepository.save(objection);
+            objectionRepository.save(objection);
+        }
         MarksVO temp = new MarksVO(marksVO.getRollNo(), subject.getSubCode(), subject.getName(),
                 marksVO.getYear(), marksVO.getTerm(), marks.getTotScore(),
                 marks.getScore(), marks.getGrade(),
