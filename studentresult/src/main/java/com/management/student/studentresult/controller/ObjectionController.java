@@ -47,7 +47,7 @@ public class ObjectionController {
         return new ResponseEntity<List<Objection>>(objection, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/resolveObjection", method = RequestMethod.POST)
+    @RequestMapping(value = "/objectionResolution", method = RequestMethod.POST)
     public ResponseEntity<?> resolveRaisedObjection(@RequestParam Map<String, String> requestParams, @RequestBody List<ObjectionVO> objectionVOS) {
         List<ObjectionVO> objection;
         String extId = requestParams.get(HttpFields.REQ_PARAM_EXTID.getName());
