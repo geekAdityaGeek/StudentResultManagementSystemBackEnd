@@ -20,14 +20,14 @@ public class FileFormatUtils {
 	private static Map<String, Map<String, Integer>> map = new HashedMap<String, Map<String, Integer>>();
 
 	public static Map<String, Map<String, Integer>> readFile() throws IOException {
-		File file = new File(".\\FileFields.txt");
+		File file = new File(Constants.FEILD_CONFIGURATION_FILE);
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
 
 		while ((line = br.readLine()) != null) {
-			String[] input = line.split("=");
+			String[] input = line.split(Constants.FEILD_CONFIGURATION_KEY_VAL_SEP);
 			String fileName = input[0];
-			String[] buffer = input[1].split(":");
+			String[] buffer = input[1].split(Constants.FEILD_CONFIGURATION_FIELD_SEP);
 			Map<String, Integer> fieldsMap = new HashedMap<String, Integer>();
 			for (int i = 0; i < buffer.length; i++) {
 				fieldsMap.put(buffer[i], i);

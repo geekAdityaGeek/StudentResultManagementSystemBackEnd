@@ -1,5 +1,7 @@
 package com.management.student.studentresult.dao;
 
+import com.management.student.studentresult.enums.Status;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -39,7 +41,7 @@ public class Marks {
 
     @PrePersist
     void created_at() {
-        this.status = "ACTIVE";
+        this.status = Status.ACTIVE.getName();
         this.createdAt = this.modifiedAt = new Date();
     }
 
@@ -56,7 +58,7 @@ public class Marks {
         this.year = year;
         this.term = term;
         this.grade = grade;
-        this.status = "ACTIVE";
+        this.status = Status.ACTIVE.getName();
         this.createdBy = moderator;
         this.modifiedBy = moderator;
     }

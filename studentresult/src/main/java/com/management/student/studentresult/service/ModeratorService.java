@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import com.management.student.studentresult.utils.Constants;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -58,7 +59,7 @@ public class ModeratorService {
 		String response = "";
 		Iterator<Row> rowItr = readFile(fileMarksUpl);
 		User moderator = userRepository.findByExtId(modExitId);
-		String operation = "UPLOAD";
+		String operation = Constants.FEILD_CONFIGURATION_KEY_UPLOAD_FORMAT;
 		FileField fields = FileFieldGetter.getFields(operation);
 		while (rowItr.hasNext()) {
 			Row row = rowItr.next();
@@ -69,7 +70,7 @@ public class ModeratorService {
 					FileField.marksVO.getRollNo(), FileField.marksVO.getYear(), FileField.marksVO.getTerm(),
 					FileField.marksVO.getSubjectCode(), FileField.marksVO.getTotalMarks(),
 					FileField.marksVO.getMarksObtained(), FileField.marksVO.getGrade(), null, null);
-			Validator validator = validatorUtils.validateChain(operation + "_VALIDATIONS", validationFields);
+			Validator validator = validatorUtils.validateChain(Constants.FEILD_CONFIGURATION_KEY_UPLOAD_VALIDATION, validationFields);
 			validator.validate();
 			User student = userRepository.findByExtId(FileField.marksVO.getRollNo());
 			Subject subject = subjectRepository.findBySubCode(FileField.marksVO.getSubjectCode());
@@ -101,14 +102,14 @@ public class ModeratorService {
 
 	public String marksSingleUpload(MarksVO marksVO, String modExitId) throws Exception {
 		// TODO Auto-generated method stub
-		String operation = "UPLOAD";
+		String operation = Constants.FEILD_CONFIGURATION_KEY_UPLOAD_FORMAT;
 		User student = userRepository.findByExtId(marksVO.getRollNo());
 		Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
 		ValidatorUtils.ValidationFields validationFields = new ValidatorUtils.ValidationFields(
 				FileField.marksVO.getRollNo(), FileField.marksVO.getYear(), FileField.marksVO.getTerm(),
 				FileField.marksVO.getSubjectCode(), FileField.marksVO.getTotalMarks(),
 				FileField.marksVO.getMarksObtained(), FileField.marksVO.getGrade(), student, subject);
-		Validator validator = validatorUtils.validateChain(operation + "_VALIDATIONS", validationFields);
+		Validator validator = validatorUtils.validateChain(Constants.FEILD_CONFIGURATION_KEY_UPLOAD_VALIDATION, validationFields);
 		validator.validate();
 		User moderator = userRepository.findByExtId(modExitId);
 		Marks marks = new Marks(student, subject, marksVO.getMarksObtained(), marksVO.getTotalMarks(),
@@ -124,7 +125,7 @@ public class ModeratorService {
 		String response = "";
 		Iterator<Row> rowItr = readFile(fileMarksUpdt);
 		User moderator = userRepository.findByExtId(modExitId);
-		String operation = "UPDATE";
+		String operation = Constants.FEILD_CONFIGURATION_KEY_UPDATE_FORMAT;
 		FileField fields = FileFieldGetter.getFields(operation);
 		while (rowItr.hasNext()) {
 			Row row = rowItr.next();
@@ -137,7 +138,7 @@ public class ModeratorService {
 					FileField.marksVO.getRollNo(), FileField.marksVO.getYear(), FileField.marksVO.getTerm(),
 					FileField.marksVO.getSubjectCode(), FileField.marksVO.getTotalMarks(),
 					FileField.marksVO.getMarksObtained(), FileField.marksVO.getGrade(), student, subject);
-			Validator validator = validatorUtils.validateChain(operation + "_VALIDATIONS", validationFields);
+			Validator validator = validatorUtils.validateChain(Constants.FEILD_CONFIGURATION_KEY_UPDATE_VALIDATION, validationFields);
 			validator.validate();
 			Marks mark = marksRepository.findByUserAndSubjectAndTermAndYear(student, subject,
 					FileField.marksVO.getTerm(), FileField.marksVO.getYear());

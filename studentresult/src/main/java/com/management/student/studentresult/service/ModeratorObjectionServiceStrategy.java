@@ -5,6 +5,7 @@ import com.management.student.studentresult.dao.Objection;
 import com.management.student.studentresult.dao.Subject;
 import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.enums.Operation;
+import com.management.student.studentresult.enums.Status;
 import com.management.student.studentresult.repository.MarksRepository;
 import com.management.student.studentresult.repository.ObjectionRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
@@ -69,7 +70,7 @@ public class ModeratorObjectionServiceStrategy implements IObjectionServiceStrat
         User user = userService.getUserByExtId(extId);
         Page<Objection> objections = objectionRepository.findAllByResolverId(user, pageable);
         for (Objection objection : objections) {
-            if (!"ACTIVE".equals(objection.getStatus()))
+            if (!Status.ACTIVE.getName().equals(objection.getStatus()))
                 continue;
             ObjectionVO objectionVO = new ObjectionVO();
             Subject subject = subjectRepository.findBySubCode(objection.getMarks().getSubject().getSubCode());

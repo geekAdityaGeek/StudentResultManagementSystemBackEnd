@@ -4,6 +4,7 @@ import com.management.student.studentresult.dao.Marks;
 import com.management.student.studentresult.dao.Objection;
 import com.management.student.studentresult.dao.Subject;
 import com.management.student.studentresult.dao.User;
+import com.management.student.studentresult.enums.Status;
 import com.management.student.studentresult.repository.MarksRepository;
 import com.management.student.studentresult.repository.ObjectionRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
@@ -39,9 +40,9 @@ public class StudentObjectionServiceStrategy implements IObjectionServiceStrateg
             Objection objection = new Objection();
             User user = userService.getUserByExtId(marksVO.getRollNo());
             objection.setCreatedBy(user);
-            objection.setStatus("ACTIVE");
+            objection.setStatus(Status.ACTIVE.getName());
             Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
-            Marks mark = repository.findByUserAndSubjectAndTermAndYearAndStatus(user, subject, marksVO.getTerm(), marksVO.getYear(), "ACTIVE");
+            Marks mark = repository.findByUserAndSubjectAndTermAndYearAndStatus(user, subject, marksVO.getTerm(), marksVO.getYear(), Status.ACTIVE.getName());
             if (checkIfObjectionExists(mark))
                 throw new Exception("Student has already raised the exception for this mark record!");
             objection.setMarks(mark);
@@ -66,7 +67,7 @@ public class StudentObjectionServiceStrategy implements IObjectionServiceStrateg
         User user = userService.getUserByExtId(extId);
         Page<Objection> objections = objectionRepository.findAllByCreatedBy(user, pageable);
         for (Objection objection : objections) {
-            if(objection.getStatus().equals("INACTIVE"))
+            if(Status.INACTIVE.getName().equals(objection.getStatus()))
                 continue;
             ObjectionVO objectionVO = new ObjectionVO();
             objectionVO.setComments(objection.getComment());

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import com.management.student.studentresult.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +76,7 @@ public class UserService implements UserDetailsService{
     		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     		System.out.println(userDetails.getDob()); 
     		ValidatorUtils.ValidationFields vf= new ValidatorUtils.ValidationFields(userDetails.getExtId(), userDetails.getEmail(), userDetails.getContactno(), format.parse(userDetails.getDob()));
-			Validator validator= validatorUtils.validateChain("REGISTRATION_VALIDATIONS",vf);
+			Validator validator= validatorUtils.validateChain(Constants.FEILD_CONFIGURATION_KEY_REGISTRATION_VALIDATION,vf);
 			validator.validate();
 			System.out.println("UserDetails validation successful!");
 			Auth auth = new Auth(userDetails.getEmail(), userDetails.getPassword());

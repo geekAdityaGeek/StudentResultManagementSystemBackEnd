@@ -5,6 +5,7 @@ import com.management.student.studentresult.dao.Objection;
 import com.management.student.studentresult.dao.Subject;
 import com.management.student.studentresult.dao.User;
 import com.management.student.studentresult.enums.Operation;
+import com.management.student.studentresult.enums.Status;
 import com.management.student.studentresult.repository.MarksRepository;
 import com.management.student.studentresult.repository.ObjectionRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
@@ -107,11 +108,11 @@ public class MarksService {
     }
 
     public MarksVO performSoftDelete(Marks marks, MarksVO marksVO, Subject subject){
-        marks.setStatus("INACTIVE");
+        marks.setStatus(Status.INACTIVE.getName());
         marks = repository.save(marks);
         Objection objection = objectionRepository.findByMarks(marks);
         if(objection != null)
-            objection.setStatus("INACTIVE");
+            objection.setStatus(Status.INACTIVE.getName());
         objectionRepository.save(objection);
         MarksVO temp = new MarksVO(marksVO.getRollNo(), subject.getSubCode(), subject.getName(),
                 marksVO.getYear(), marksVO.getTerm(), marks.getTotScore(),

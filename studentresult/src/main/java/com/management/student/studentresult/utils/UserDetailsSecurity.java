@@ -2,6 +2,8 @@ package com.management.student.studentresult.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import com.management.student.studentresult.enums.Status;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,7 +28,7 @@ public class UserDetailsSecurity implements UserDetails{
 		this.username= user.getExtId();
 		this.password=user.getAuth().getPassword();
 		this.name=user.getName();
-		if(user.getStatus().equals("ACTIVE"))
+		if(user.getStatus().equals(Status.ACTIVE.getName()))
 			this.isEnabled=true;
 		else this.isEnabled=false;
 		this.role=user.getRole().getName();

@@ -3,6 +3,7 @@ package com.management.student.studentresult.specs;
 import com.management.student.studentresult.dao.Marks;
 import com.management.student.studentresult.dao.Subject;
 import com.management.student.studentresult.dao.User;
+import com.management.student.studentresult.enums.Status;
 import org.springframework.data.jpa.domain.Specification;
 
 public class MarksSpecs {
@@ -44,6 +45,6 @@ public class MarksSpecs {
 
     public static Specification<Marks> marksStatusActive() {
         return (root, query, builder) ->
-                builder.equal(root.get("status"), "ACTIVE");
+                builder.equal(root.get("status"), Status.ACTIVE.getName());
     }
 }

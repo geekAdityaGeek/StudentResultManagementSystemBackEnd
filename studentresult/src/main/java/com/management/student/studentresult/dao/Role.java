@@ -1,5 +1,7 @@
 package com.management.student.studentresult.dao;
 
+import com.management.student.studentresult.enums.Status;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -26,7 +28,7 @@ public class Role {
 
     @PrePersist
     void created_at() {
-        this.status = "ACTIVE";
+        this.status = Status.ACTIVE.getName();
         this.createdAt = this.modifiedAt = new Date();
     }
 
@@ -39,7 +41,7 @@ public class Role {
         this.name = name;
         this.createdBy = createdBy;
         this.modifiedBy = modifiedBy;
-        this.status = "ACTIVE";
+        this.status = Status.ACTIVE.getName();
     }
 
     public Role() {

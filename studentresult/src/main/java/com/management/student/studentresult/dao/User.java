@@ -1,5 +1,7 @@
 package com.management.student.studentresult.dao;
 
+import com.management.student.studentresult.enums.Status;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,7 +47,7 @@ public class User {
 
 	@PrePersist
 	void created_at() {
-		this.status = "ACTIVE";
+		this.status = Status.ACTIVE.getName();
 		this.createdAt = this.modifiedAt = new Date(); 
 	}
 	
@@ -62,7 +64,7 @@ public class User {
 		this.address = address;
 		this.phone = phone;
 		this.dob = dob;
-		this.status = "ACTIVE";
+		this.status = Status.ACTIVE.getName();
 	}
 
 	public User() {

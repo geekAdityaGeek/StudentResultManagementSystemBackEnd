@@ -1,5 +1,6 @@
 package com.management.student.studentresult.controller;
 
+import com.management.student.studentresult.enums.HttpFields;
 import com.management.student.studentresult.service.MarksService;
 import com.management.student.studentresult.utils.QueryVOMapper;
 import com.management.student.studentresult.vo.MarksVO;
@@ -30,8 +31,8 @@ public class MarksController {
     @GetMapping("/getMarks/pagination")
     public ResponseEntity<?> queryMarksPagination(@RequestParam Map<String, String> requestParameters){
         try {
-            int page = Integer.parseInt(requestParameters.get("page"));
-            int items = Integer.parseInt(requestParameters.get("items"));
+            int page = Integer.parseInt(requestParameters.get(HttpFields.REQ_PARAM_PAGE.getName()));
+            int items = Integer.parseInt(requestParameters.get(HttpFields.REQ_PARAM_ITEMS.getName()));
             QueryVO query = QueryVOMapper.mapFromRequestParameter(requestParameters);
             Pageable pageable = PageRequest.of(page, items, Sort.by("createdAt").descending());
             PagingMarksVO response = marksService.getMarksDetailsWithPagination(query, pageable);

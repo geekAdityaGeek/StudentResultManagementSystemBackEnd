@@ -1,5 +1,7 @@
 package com.management.student.studentresult.dao;
 
+import com.management.student.studentresult.enums.Status;
+
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
@@ -32,7 +34,7 @@ public class Auth {
 
     @PrePersist
     void created_at() {
-        this.status = "ACTIVE";
+        this.status = Status.ACTIVE.getName();
         this.createdAt = this.modifiedAt = new Date();
     }
 
@@ -44,7 +46,7 @@ public class Auth {
     public Auth(String email, String password) {
         this.email = email;
         this.password = password;
-        this.status = "ACTIVE";
+        this.status = Status.ACTIVE.getName();
     }
 
     public Auth() {

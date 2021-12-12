@@ -1,6 +1,7 @@
 package com.management.student.studentresult.controller;
 
 import com.management.student.studentresult.dao.Objection;
+import com.management.student.studentresult.enums.HttpFields;
 import com.management.student.studentresult.service.MarksService;
 import com.management.student.studentresult.service.ModeratorService;
 import com.management.student.studentresult.service.ObjectionService;
@@ -36,7 +37,7 @@ public class ObjectionController {
     @RequestMapping(value = "/raiseObjection", method = RequestMethod.POST)
     public ResponseEntity<?> studentRaiseObjection(@RequestParam Map<String, String> requestParams, @RequestBody List<MarksVO> marksVO) {
         List<Objection> objection;
-        String extId = requestParams.get("extId");
+        String extId = requestParams.get(HttpFields.REQ_PARAM_EXTID.getName());
         try {
             objection = objectionService.raiseObjection(extId, marksVO);
         } catch (Exception ex) {
@@ -49,7 +50,7 @@ public class ObjectionController {
     @RequestMapping(value = "/resolveObjection", method = RequestMethod.POST)
     public ResponseEntity<?> resolveRaisedObjection(@RequestParam Map<String, String> requestParams, @RequestBody List<ObjectionVO> objectionVOS) {
         List<ObjectionVO> objection;
-        String extId = requestParams.get("extId");
+        String extId = requestParams.get(HttpFields.REQ_PARAM_EXTID.getName());
         try {
             objection = objectionService.resolveObjection(extId, objectionVOS);
         } catch (Exception ex) {
@@ -63,9 +64,9 @@ public class ObjectionController {
     public ResponseEntity<?> getObjections(@RequestParam Map<String, String> requestParams) {
         PagingObjectionVO response;
         try {
-            String extId = requestParams.get("extId");
-            int page = Integer.parseInt(requestParams.get("page"));
-            int items = Integer.parseInt(requestParams.get("items"));
+            String extId = requestParams.get(HttpFields.REQ_PARAM_EXTID.getName());
+            int page = Integer.parseInt(requestParams.get(HttpFields.REQ_PARAM_PAGE.getName()));
+            int items = Integer.parseInt(requestParams.get(HttpFields.REQ_PARAM_ITEMS.getName()));
             Pageable pageable = PageRequest.of(page, items, Sort.by("createdBy").descending());
             response = objectionService.getObjections(extId, pageable);
         } catch (Exception ex) {
