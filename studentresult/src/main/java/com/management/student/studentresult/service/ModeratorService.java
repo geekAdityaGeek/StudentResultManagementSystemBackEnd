@@ -106,9 +106,9 @@ public class ModeratorService {
 		User student = userRepository.findByExtId(marksVO.getRollNo());
 		Subject subject = subjectRepository.findBySubCode(marksVO.getSubjectCode());
 		ValidatorUtils.ValidationFields validationFields = new ValidatorUtils.ValidationFields(
-				FileField.marksVO.getRollNo(), FileField.marksVO.getYear(), FileField.marksVO.getTerm(),
-				FileField.marksVO.getSubjectCode(), FileField.marksVO.getTotalMarks(),
-				FileField.marksVO.getMarksObtained(), FileField.marksVO.getGrade(), student, subject);
+				marksVO.getRollNo(), marksVO.getYear(), marksVO.getTerm(),
+				marksVO.getSubjectCode(), marksVO.getTotalMarks(),
+				marksVO.getMarksObtained(), marksVO.getGrade(), student, subject);
 		Validator validator = validatorUtils.validateChain(Constants.FEILD_CONFIGURATION_KEY_UPLOAD_VALIDATION, validationFields);
 		validator.validate();
 		User moderator = userRepository.findByExtId(modExitId);
