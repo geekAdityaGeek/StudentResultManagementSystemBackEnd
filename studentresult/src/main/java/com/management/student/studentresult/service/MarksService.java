@@ -11,6 +11,9 @@ import com.management.student.studentresult.repository.ObjectionRepository;
 import com.management.student.studentresult.repository.SubjectRepository;
 import com.management.student.studentresult.repository.UserRepository;
 import com.management.student.studentresult.specs.MarksSpecs;
+import com.management.student.studentresult.utils.Constants;
+import com.management.student.studentresult.utils.ValidatorUtils;
+import com.management.student.studentresult.validator.Validator;
 import com.management.student.studentresult.vo.MarksVO;
 import com.management.student.studentresult.vo.PagingMarksVO;
 import com.management.student.studentresult.vo.QueryVO;
@@ -42,6 +45,9 @@ public class MarksService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ValidatorUtils validatorUtils;
 
     public Marks saveMarks(Marks marks){
         return repository.save(marks);
@@ -92,12 +98,19 @@ public class MarksService {
         return new PagingMarksVO(pageable.getPageNumber(), marksList.getTotalPages(), pageable.getPageSize(), marksVOList);
     }
 
-    public List<MarksVO> updateMarksQueryResult(List<MarksVO> marksVO) throws ParseException {
+    public List<MarksVO> updateMarksQueryResult(List<MarksVO> marksVO) throws Exception {
         List<MarksVO> marksVOList = new ArrayList<>();
         for (MarksVO marksVO1 : marksVO) {
             String operationType = marksVO1.getOperation();
+            String operation = Constants.FEILD_CONFIGURATION_KEY_UPLOAD_FORMAT;
             User user = userService.getUserByExtId(marksVO1.getRollNo());
             Subject subject = subjectRepository.findBySubCode(marksVO1.getSubjectCode());
+            ValidatorUtils.ValidationFields validationFields = new ValidatorUtils.ValidationFields(
+                    marksVO1.getRollNo(), marksVO1.getYear(), marksVO1.getTerm(),
+                    marksVO1.getSubjectCode(), marksVO1.getTotalMarks(),
+                    marksVO1.getMarksObtained(), marksVO1.getGrade(), user, subject);
+            Validator validator = validatorUtils.validateChain(Constants.FEILD_CONFIGURATION_KEY_UPDATE_VALIDATION, validationFields);
+            validator.validate();
             Marks mark = repository.findByUserAndSubjectAndTermAndYear(user, subject, marksVO1.getTerm(), marksVO1.getYear());
             if(Operation.DELETE.getName().equals(operationType)) {
                 MarksVO temp = performSoftDelete(mark, marksVO1, subject);
